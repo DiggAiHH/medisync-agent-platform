@@ -1,0 +1,319 @@
+{
+  "name": "medical-ai-assistant",
+  "displayName": "Medical AI Assistant",
+  "description": "KI-gestützte Unterstützung für medizinische Dokumentation (Code-Server Edition)",
+  "version": "2.0.0",
+  "publisher": "medical-ai-team",
+  "galleryBanner": {
+    "color": "#0066CC",
+    "theme": "dark"
+  },
+  "badges": [
+    {
+      "url": "https://img.shields.io/badge/WCAG%202.1-AA-green",
+      "href": "https://www.w3.org/WAI/WCAG21/quickref/",
+      "description": "WCAG 2.1 AA Compliant"
+    },
+    {
+      "url": "https://img.shields.io/badge/Ollama-Local%20AI-blue",
+      "href": "https://ollama.com",
+      "description": "Ollama Integration"
+    },
+    {
+      "url": "https://img.shields.io/badge/GitHub%20Models-Fallback-purple",
+      "href": "https://github.com/marketplace/models",
+      "description": "GitHub Models Fallback"
+    }
+  ],
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Machine Learning",
+    "Snippets",
+    "Other"
+  ],
+  "keywords": [
+    "medical",
+    "healthcare",
+    "documentation",
+    "AI",
+    "assistant",
+    "german",
+    "ICD-10",
+    "ollama",
+    "local AI",
+    "DSGVO",
+    "GDPR",
+    "accessibility",
+    "wcag",
+    "medical coding",
+    "diagnosis",
+    "github models",
+    "code-server"
+  ],
+  "activationEvents": [
+    "onView:medicalAiPanel",
+    "onCommand:medicalAi.openPanel",
+    "onCommand:medicalAi.analyzeSelection"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "medicalAi.openPanel",
+        "title": "Open Medical AI Panel",
+        "category": "Medical AI",
+        "icon": "$(sparkle)"
+      },
+      {
+        "command": "medicalAi.analyzeSelection",
+        "title": "Analyze Selected Text",
+        "category": "Medical AI",
+        "icon": "$(search)"
+      },
+      {
+        "command": "medicalAi.generateReport",
+        "title": "Generate Medical Report",
+        "category": "Medical AI",
+        "icon": "$(file-text)"
+      },
+      {
+        "command": "medicalAi.toggleZenMode",
+        "title": "Toggle Focus Mode",
+        "category": "Medical AI",
+        "icon": "$(screen-full)"
+      },
+      {
+        "command": "medicalAi.applyToEditor",
+        "title": "In Editor einfügen",
+        "category": "Medical AI"
+      },
+      {
+        "command": "medicalAi.undoLastApply",
+        "title": "Letzte Einfügung rückgängig",
+        "category": "Medical AI"
+      },
+      {
+        "command": "medicalAi.switchProvider",
+        "title": "LLM Provider wechseln",
+        "category": "Medical AI",
+        "icon": "$(sync)"
+      },
+      {
+        "command": "medicalAi.checkProviders",
+        "title": "Provider-Status prüfen",
+        "category": "Medical AI",
+        "icon": "$(check)"
+      }
+    ],
+    "views": {
+      "medicalAiSidebar": [
+        {
+          "id": "medicalAiPanel",
+          "name": "AI Assistant",
+          "icon": "media/icon.svg",
+          "contextualTitle": "Medical AI"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "medicalAiSidebar",
+          "title": "Medical AI",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "medicalAi.openPanel",
+          "when": "true"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "medicalAi.analyzeSelection",
+          "when": "editorHasSelection",
+          "group": "9_cutcopypaste@5"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "medicalAi.toggleZenMode",
+          "when": "view == medicalAiPanel",
+          "group": "navigation"
+        },
+        {
+          "command": "medicalAi.switchProvider",
+          "when": "view == medicalAiPanel",
+          "group": "navigation"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "medicalAi.openPanel",
+        "key": "ctrl+shift+m",
+        "mac": "cmd+shift+m"
+      },
+      {
+        "command": "medicalAi.analyzeSelection",
+        "key": "ctrl+shift+a",
+        "mac": "cmd+shift+a",
+        "when": "editorHasSelection"
+      }
+    ],
+    "configuration": {
+      "title": "Medical AI",
+      "properties": {
+        "medicalAi.ollamaEndpoint": {
+          "type": "string",
+          "default": "http://localhost:11434",
+          "description": "Ollama API Endpoint URL (kann auch via OLLAMA_HOST Umgebungsvariable gesetzt werden)"
+        },
+        "medicalAi.modelName": {
+          "type": "string",
+          "default": "llama3.2",
+          "description": "Standard LLM Modell für Analysen (kann via OLLAMA_MODEL Umgebungsvariable überschrieben werden)"
+        },
+        "medicalAi.embeddingModel": {
+          "type": "string",
+          "default": "nomic-embed-text",
+          "description": "Modell für Embeddings (kann via OLLAMA_EMBEDDING_MODEL Umgebungsvariable überschrieben werden)"
+        },
+        "medicalAi.temperature": {
+          "type": "number",
+          "default": 0.3,
+          "minimum": 0,
+          "maximum": 2,
+          "description": "Temperatur für Generierung (niedriger = präziser)"
+        },
+        "medicalAi.maxTokens": {
+          "type": "number",
+          "default": 1000,
+          "description": "Maximale Token pro Antwort"
+        },
+        "medicalAi.enableStreaming": {
+          "type": "boolean",
+          "default": true,
+          "description": "Streaming-Antworten aktivieren"
+        },
+        "medicalAi.customPrompts": {
+          "type": "object",
+          "default": {
+            "analyze": "Analysiere den folgenden medizinischen Text und extrahiere Schlüsselinformationen:",
+            "summarize": "Fasse den folgenden medizinischen Bericht zusammen:",
+            "icd10": "Schlage passende ICD-10 Codes für folgende Diagnose vor:"
+          },
+          "description": "Benutzerdefinierte Prompts"
+        },
+        "medicalAi.llmProvider": {
+          "type": "string",
+          "enum": ["auto", "ollama", "github", "backend"],
+          "default": "auto",
+          "description": "LLM Provider: auto (automatisch), ollama (lokal), github (GitHub Models), backend (Backend API)"
+        },
+        "medicalAi.preferLocalLLM": {
+          "type": "boolean",
+          "default": true,
+          "description": "Bei 'auto' lokalen Ollama bevorzugen"
+        },
+        "medicalAi.enableLLMFallback": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatischer Fallback auf andere Provider wenn primärer nicht verfügbar"
+        },
+        "medicalAi.githubToken": {
+          "type": "string",
+          "default": "",
+          "description": "GitHub Personal Access Token für GitHub Models (kann via GITHUB_TOKEN Umgebungsvariable gesetzt werden)"
+        },
+        "medicalAi.githubModel": {
+          "type": "string",
+          "default": "gpt-4o-mini",
+          "description": "Modell für GitHub Models (kann via GITHUB_MODELS_MODEL Umgebungsvariable überschrieben werden)"
+        },
+        "medicalAi.backendUrl": {
+          "type": "string",
+          "default": "http://localhost:3001",
+          "description": "Backend API URL (kann via BACKEND_API_URL Umgebungsvariable gesetzt werden)"
+        },
+        "medicalAi.backendApiKey": {
+          "type": "string",
+          "default": "",
+          "description": "API Key für Backend (kann via BACKEND_API_KEY Umgebungsvariable gesetzt werden)"
+        },
+        "medicalAi.backendTimeout": {
+          "type": "number",
+          "default": 30000,
+          "description": "Timeout für Backend API Requests in ms"
+        }
+      }
+    },
+    "colors": [
+      {
+        "id": "medicalAi.primary",
+        "description": "Primärfarbe für Medical AI",
+        "defaults": {
+          "light": "#0066CC",
+          "dark": "#4A9EFF",
+          "highContrast": "#4A9EFF"
+        }
+      },
+      {
+        "id": "medicalAi.success",
+        "description": "Erfolgsfarbe",
+        "defaults": {
+          "light": "#388E3C",
+          "dark": "#66BB6A",
+          "highContrast": "#66BB6A"
+        }
+      },
+      {
+        "id": "medicalAi.warning",
+        "description": "Warnungsfarbe",
+        "defaults": {
+          "light": "#F57C00",
+          "dark": "#FFA726",
+          "highContrast": "#FFA726"
+        }
+      },
+      {
+        "id": "medicalAi.critical",
+        "description": "Kritische Farbe",
+        "defaults": {
+          "light": "#D32F2F",
+          "dark": "#EF5350",
+          "highContrast": "#EF5350"
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js",
+    "install-extension": "npm run compile && mkdir -p ../../extensions && cp -r out ../../extensions/medical-ai-extension/ && cp -r media ../../extensions/medical-ai-extension/ && cp package.json ../../extensions/medical-ai-extension/"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "^18.x",
+    "@types/mocha": "^10.x",
+    "@vscode/test-electron": "^2.x",
+    "@typescript-eslint/eslint-plugin": "^6.x",
+    "@typescript-eslint/parser": "^6.x",
+    "eslint": "^8.x",
+    "glob": "^10.x",
+    "mocha": "^10.x",
+    "typescript": "^5.x"
+  },
+  "dependencies": {
+    "ollama": "^0.5.0"
+  }
+}

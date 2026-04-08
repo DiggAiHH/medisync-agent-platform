@@ -1,0 +1,67 @@
+# Cloudflare Tunnel Configuration for MediSync Agents Platform
+# Diese Datei wird durch Umgebungsvariablen ergänzt
+# Token-basierter Auth bevorzugt - kein credentials-file nötig bei CF_TUNNEL_TOKEN
+#
+# WICHTIG: Diese Datei ist ein Template. Die tatsächliche Tunnel-ID
+# wird über das CF_TUNNEL_TOKEN in der docker-compose.yml konfiguriert.
+
+tunnel: ${CF_TUNNEL_ID:-<TUNNEL_ID>}
+# credentials-file wird nicht benötigt wenn CF_TUNNEL_TOKEN verwendet wird
+# credentials-file: /home/nonroot/.cloudflared/${CF_TUNNEL_ID}.json
+
+# Logging-Konfiguration
+logfile: /var/log/cloudflared/tunnel.log
+log-level: info
+
+# Transport-Konfiguration
+protocol: quic
+# Retries bei Verbindungsabbrüchen
+retries: 5
+# Graceful shutdown
+grace-period: 30s
+
+# Heartbeat zur Überwachung
+heartbeat-interval: 10s
+heartbeat-count: 3
+
+# Ingress-Rules für alle Services
+ingress:
+  # API Backend - Haupt-API für Agenten
+  - hostname: ${CF_API_HOSTNAME:-api.medisync.local}
+    service: http://devcontainer:3000
+    originRequest:
+      noTLSVerify: true
+      connectTimeout: 30s
+      tlsTimeout: 10s
+
+  # WebSocket Server - Echtzeit-Updates
+  - hostname: ${CF_WS_HOSTNAME:-ws.medisync.local}
+    service: http://devcontainer:8080
+    originRequest:
+      noTLSVerify: true
+      connectTimeout: 30s
+      # WebSocket Support
+      websocketTimeout: 60s
+
+  # Code Server - VS Code in Browser
+  - hostname: ${CF_CODE_HOSTNAME:-code.medisync.local}
+    service: http://devcontainer:8443
+    originRequest:
+      noTLSVerify: true
+      connectTimeout: 30s
+
+  # Dashboard - React Frontend
+  - hostname: ${CF_DASHBOARD_HOSTNAME:-dashboard.medisync.local}
+    service: http://devcontainer:5173
+    originRequest:
+      noTLSVerify: true
+      connectTimeout: 30s
+
+  # Redis Insight (optional, falls aktiviert)
+  - hostname: ${CF_REDIS_HOSTNAME:-redis.medisync.local}
+    service: http://devcontainer:8001
+    originRequest:
+      noTLSVerify: true
+
+  # Fallback: 404 für nicht definierte Hosts
+  - service: http_status:404

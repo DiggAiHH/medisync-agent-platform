@@ -1,0 +1,401 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    // ==========================================
+    // Start All Services
+    // ==========================================
+    {
+      "label": "Start All Services",
+      "detail": "Startet API Server, Worker, Dashboard und Redis",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-c",
+        "echo '🚀 Starte alle Services...' && npm run dev:all"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "."
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "Starte alle Services",
+          "endsPattern": "Server bereit|Dashboard bereit|ready"
+        }
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "icon": {
+        "color": "terminal.ansiGreen",
+        "id": "play"
+      }
+    },
+    
+    // ==========================================
+    // Stop All Services
+    // ==========================================
+    {
+      "label": "Stop All Services",
+      "detail": "Stoppt alle laufenden Services",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-c",
+        "echo '🛑 Stoppe alle Services...' && pkill -f 'ts-node' || true && pkill -f 'node.*server' || true && pkill -f 'vite' || true && echo '✅ Alle Services gestoppt'"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "icon": {
+        "color": "terminal.ansiRed",
+        "id": "debug-stop"
+      }
+    },
+    
+    // ==========================================
+    // Individual Services
+    // ==========================================
+    {
+      "label": "Start API Server",
+      "detail": "Startet nur den API Server",
+      "type": "shell",
+      "command": "cd backend && npm run dev",
+      "group": "build",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "icon": {
+        "color": "terminal.ansiBlue",
+        "id": "server"
+      }
+    },
+    {
+      "label": "Start Worker",
+      "detail": "Startet den Agent Worker",
+      "type": "shell",
+      "command": "cd backend && npx ts-node src/worker/index.ts",
+      "group": "build",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "icon": {
+        "color": "terminal.ansiYellow",
+        "id": "gear"
+      }
+    },
+    {
+      "label": "Start Dashboard",
+      "detail": "Startet das Vite Dashboard",
+      "type": "shell",
+      "command": "cd dashboard && npm run dev",
+      "group": "build",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "icon": {
+        "color": "terminal.ansiMagenta",
+        "id": "browser"
+      }
+    },
+    {
+      "label": "Start Discord Bot",
+      "detail": "Startet den Discord Bot",
+      "type": "shell",
+      "command": "cd bot/discord && npm run dev",
+      "group": "build",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "icon": {
+        "color": "terminal.ansiCyan",
+        "id": "comment-discussion"
+      }
+    },
+    
+    // ==========================================
+    // Build Tasks
+    // ==========================================
+    {
+      "label": "Build Extension",
+      "detail": "Baut die VS Code Extension",
+      "type": "shell",
+      "command": "cd code-server/extensions/medical-ai-extension && npm run compile",
+      "group": "build",
+      "problemMatcher": "$tsc",
+      "presentation": {
+        "echo": true,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "icon": {
+        "color": "terminal.ansiGreen",
+        "id": "package"
+      }
+    },
+    {
+      "label": "Build All",
+      "detail": "Baut alle Projekte",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-c",
+        "echo '🔨 Baue alle Projekte...' && cd backend && npm run build && cd ../dashboard && npm run build && cd ../bot/discord && npm run build && cd ../code-server/extensions/medical-ai-extension && npm run compile && echo '✅ Alle Builds erfolgreich'"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "problemMatcher": ["$tsc"],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "icon": {
+        "color": "terminal.ansiGreen",
+        "id": "tools"
+      }
+    },
+    
+    // ==========================================
+    // Test Tasks
+    // ==========================================
+    {
+      "label": "Run All Tests",
+      "detail": "Führt alle Tests aus",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-c",
+        "echo '🧪 Führe alle Tests aus...' && npm test"
+      ],
+      "group": "test",
+      "problemMatcher": "$jest",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "icon": {
+        "color": "terminal.ansiYellow",
+        "id": "beaker"
+      }
+    },
+    {
+      "label": "Run Backend Tests",
+      "detail": "Führt Backend-Tests aus",
+      "type": "shell",
+      "command": "cd backend && npm test",
+      "group": "test",
+      "problemMatcher": "$jest",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "icon": {
+        "color": "terminal.ansiYellow",
+        "id": "beaker"
+      }
+    },
+    {
+      "label": "Run Extension Tests",
+      "detail": "Führt VS Code Extension Tests aus",
+      "type": "shell",
+      "command": "cd code-server/extensions/medical-ai-extension && npm test",
+      "group": "test",
+      "problemMatcher": "$jest",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "icon": {
+        "color": "terminal.ansiYellow",
+        "id": "beaker"
+      }
+    },
+    
+    // ==========================================
+    // Infrastructure Tasks
+    // ==========================================
+    {
+      "label": "Start Redis",
+      "detail": "Startet Redis Server",
+      "type": "shell",
+      "command": "redis-server --daemonize yes && echo '✅ Redis gestartet'",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "icon": {
+        "color": "terminal.ansiRed",
+        "id": "database"
+      }
+    },
+    {
+      "label": "Check Status",
+      "detail": "Zeigt Status aller Services",
+      "type": "shell",
+      "command": "bash scripts/status.sh",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "icon": {
+        "color": "terminal.ansiBlue",
+        "id": "info"
+      }
+    },
+    
+    // ==========================================
+    // Utility Tasks
+    // ==========================================
+    {
+      "label": "Install Dependencies",
+      "detail": "Installiert alle npm Dependencies",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-c",
+        "echo '📦 Installiere Dependencies...' && cd backend && npm install && cd ../dashboard && npm install && cd ../bot/discord && npm install && cd ../code-server/extensions/medical-ai-extension && npm install && echo '✅ Alle Dependencies installiert'"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "icon": {
+        "color": "terminal.ansiGreen",
+        "id": "cloud-download"
+      }
+    },
+    {
+      "label": "Clean Build",
+      "detail": "Löscht alle Build-Artefakte",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-c",
+        "echo '🧹 Räume auf...' && rm -rf backend/dist dashboard/dist bot/discord/dist code-server/extensions/medical-ai-extension/out && find . -name 'node_modules' -type d -prune -exec rm -rf {} + 2>/dev/null || true && echo '✅ Aufgeräumt'"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "icon": {
+        "color": "terminal.ansiRed",
+        "id": "trash"
+      }
+    },
+    
+    // ==========================================
+    // npm Tasks (for launch.json)
+    // ==========================================
+    {
+      "label": "npm: compile - code-server/extensions/medical-ai-extension",
+      "type": "npm",
+      "script": "compile",
+      "path": "code-server/extensions/medical-ai-extension",
+      "problemMatcher": "$tsc",
+      "group": "build"
+    },
+    {
+      "label": "npm: watch - code-server/extensions/medical-ai-extension",
+      "type": "npm",
+      "script": "watch",
+      "path": "code-server/extensions/medical-ai-extension",
+      "problemMatcher": "$tsc-watch",
+      "group": "build",
+      "isBackground": true
+    }
+  ],
+  
+  "inputs": [
+    {
+      "id": "testPattern",
+      "type": "promptString",
+      "description": "Test pattern (optional)",
+      "default": ""
+    }
+  ]
+}

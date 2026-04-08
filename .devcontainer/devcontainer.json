@@ -1,0 +1,191 @@
+{
+  "name": "MediSync Agent Platform",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "devcontainer",
+  "workspaceFolder": "/workspaces/agents-platform",
+  "shutdownAction": "stopCompose",
+
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest",
+      "moby": true,
+      "dockerDashComposeVersion": "v2"
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20",
+      "nodeGypDependencies": true
+    },
+    "ghcr.io/devcontainers/features/redis:1": {
+      "version": "latest"
+    }
+  },
+
+  "forwardPorts": [
+    3000,
+    8080,
+    8443,
+    5173,
+    6379,
+    9229
+  ],
+  "portsAttributes": {
+    "3000": {
+      "label": "🚀 MediSync API Server",
+      "onAutoForward": "notify",
+      "protocol": "http",
+      "visibility": "public"
+    },
+    "8080": {
+      "label": "📡 WebSocket Server",
+      "onAutoForward": "silent",
+      "protocol": "http",
+      "visibility": "public"
+    },
+    "8443": {
+      "label": "💻 Code Server",
+      "onAutoForward": "silent",
+      "protocol": "https"
+    },
+    "5173": {
+      "label": "📊 Dashboard (Vite Dev)",
+      "onAutoForward": "silent",
+      "protocol": "http",
+      "visibility": "public"
+    },
+    "6379": {
+      "label": "🔴 Redis Cache",
+      "onAutoForward": "silent",
+      "requireLocalPort": true
+    },
+    "9229": {
+      "label": "🐛 Node.js Debugger",
+      "onAutoForward": "silent",
+      "protocol": "http"
+    }
+  },
+
+  "postCreateCommand": "bash .devcontainer/postCreateCommand.sh",
+  "postStartCommand": "bash scripts/init-codespace.sh",
+  "waitFor": "postCreateCommand",
+
+  "remoteEnv": {
+    "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}",
+    "DISCORD_TOKEN": "${localEnv:DISCORD_TOKEN}",
+    "REDIS_URL": "redis://localhost:6379",
+    "NODE_ENV": "development",
+    "CODESPACES": "true"
+  },
+
+  "containerEnv": {
+    "REDIS_URL": "redis://redis:6379",
+    "NODE_ENV": "development"
+  },
+
+  "secrets": {
+    "CF_TUNNEL_TOKEN": {
+      "description": "Cloudflare Tunnel Token für persistente URLs"
+    },
+    "DISCORD_TOKEN": {
+      "description": "Discord Bot Token (optional, nur für Bot-Entwicklung)"
+    },
+    "GITHUB_TOKEN": {
+      "description": "GitHub Personal Access Token mit repo- und packages-Rechten"
+    }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "ms-vscode.vscode-typescript-next",
+        "bradlc.vscode-tailwindcss",
+        "ms-azuretools.vscode-docker",
+        "redhat.vscode-yaml",
+        "github.copilot",
+        "github.copilot-chat",
+        "eamodio.gitlens",
+        "ms-vscode.test-adapter-converter",
+        "hbenl.vscode-test-explorer",
+        "orta.vscode-jest",
+        "ms-vscode.vscode-json",
+        "christian-kohler.path-intellisense",
+        "formulahendry.auto-rename-tag",
+        "streetsidesoftware.code-spell-checker",
+        "streetsidesoftware.code-spell-checker-german",
+        "mikestead.dotenv",
+        "pkief.material-icon-theme",
+        "aaron-bond.better-comments",
+        "yoavbls.pretty-ts-errors",
+        "prisma.prisma"
+      ],
+      "settings": {
+        "typescript.tsdk": "/usr/local/lib/node_modules/typescript/lib",
+        "typescript.enablePromptUseWorkspaceTsdk": true,
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "explicit",
+          "source.organizeImports": "explicit"
+        },
+        "editor.rulers": [80, 120],
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true,
+        "files.trimTrailingWhitespace": true,
+        "files.insertFinalNewline": true,
+        "remote.localPortHost": "allInterfaces",
+        "remote.autoForwardPorts": true,
+        "remote.autoForwardPortsSource": "output",
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "terminal.integrated.shell.linux": "/bin/bash",
+        "git.autofetch": true,
+        "git.confirmSync": false,
+        "explorer.confirmDragAndDrop": false,
+        "explorer.confirmDelete": false,
+        "workbench.iconTheme": "material-icon-theme",
+        "workbench.colorTheme": "Default Dark+",
+        "cSpell.language": "en,de",
+        "cSpell.words": [
+          "MediSync",
+          "medisync",
+          "Ollama",
+          "bullmq",
+          "codespace",
+          "codespaces",
+          "devcontainer",
+          "typeparam"
+        ]
+      }
+    },
+    "codespaces": {
+      "openFiles": [
+        "CONTRIBUTING.md",
+        "README.md"
+      ]
+    }
+  },
+
+  "mounts": [
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/home/node/.ssh,type=bind,consistency=cached",
+    "source=cloudflared-logs,target=/var/log/cloudflared,type=volume",
+    "source=medisync-node_modules,target=/workspaces/agents-platform/node_modules,type=volume"
+  ],
+
+  "runArgs": [
+    "--network=host",
+    "--cap-add=SYS_PTRACE",
+    "--security-opt",
+    "seccomp=unconfined"
+  ],
+
+  "overrideCommand": false,
+
+  "hostRequirements": {
+    "cpus": 4,
+    "memory": "8gb",
+    "storage": "32gb"
+  }
+}

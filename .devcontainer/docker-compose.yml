@@ -1,0 +1,100 @@
+version: '3.8'
+
+services:
+  devcontainer:
+    image: mcr.microsoft.com/devcontainers/typescript-node:20
+    container_name: medisync-devcontainer
+    volumes:
+      - ..:/workspaces/agents-platform:cached
+      - node_modules_cache:/workspaces/agents-platform/node_modules
+      - vscode_extensions:/home/node/.vscode-server/extensions
+      - vscode_insiders_extensions:/home/node/.vscode-server-insiders/extensions
+      - code_server_data:/home/node/.local/share/code-server
+    command: sleep infinity
+    environment:
+      - NODE_ENV=development
+      - REDIS_URL=redis://redis:6379
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+      - DISCORD_TOKEN=${DISCORD_TOKEN:-}
+    ports:
+      - "3000:3000"
+      - "8080:8080"
+      - "8443:8443"
+      - "5173:5173"
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - medisync-network
+    # Für GitHub Codespaces: Stellt sicher, dass der Container nicht beendet wird
+    init: true
+    stdin_open: true
+    tty: true
+
+  redis:
+    image: redis:7-alpine
+    container_name: medisync-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    networks:
+      - medisync-network
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: medisync-cloudflared
+    command: tunnel --no-autoupdate run --token ${CF_TUNNEL_TOKEN}
+    environment:
+      - CF_TUNNEL_TOKEN=${CF_TUNNEL_TOKEN}
+      - CF_TUNNEL_ID=${CF_TUNNEL_ID:-}
+      - CF_API_HOSTNAME=${CF_API_HOSTNAME:-api.medisync.local}
+      - CF_WS_HOSTNAME=${CF_WS_HOSTNAME:-ws.medisync.local}
+      - CF_CODE_HOSTNAME=${CF_CODE_HOSTNAME:-code.medisync.local}
+      - CF_DASHBOARD_HOSTNAME=${CF_DASHBOARD_HOSTNAME:-dashboard.medisync.local}
+    depends_on:
+      devcontainer:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - medisync-network
+    # Security: Non-root user
+    user: "65532:65532"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    read_only: true
+    tmpfs:
+      - /tmp:noexec,nosuid,size=100m
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  node_modules_cache:
+    driver: local
+  vscode_extensions:
+    driver: local
+  vscode_insiders_extensions:
+    driver: local
+  code_server_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  medisync-network:
+    driver: bridge

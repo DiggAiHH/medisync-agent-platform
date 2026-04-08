@@ -1,0 +1,234 @@
+# =============================================================================
+# Dependabot Configuration
+# =============================================================================
+# Automatische Updates für Dependencies
+# 
+# Dokumentation: https://docs.github.com/code-security/dependabot
+# =============================================================================
+
+version: 2
+
+updates:
+  # ===========================================================================
+  # Backend Dependencies
+  # ===========================================================================
+  - package-ecosystem: "npm"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Berlin"
+    
+    # Pull Request Konfiguration
+    open-pull-requests-limit: 10
+    target-branch: "main"
+    
+    # Reviewer und Assignees
+    reviewers:
+      - "medisync/security-team"
+    assignees:
+      - "medisync/maintainers"
+    
+    # Commit Message
+    commit-message:
+      prefix: "chore(backend)"
+      include: "scope"
+    
+    # Labels
+    labels:
+      - "dependencies"
+      - "backend"
+      - "security"
+    
+    # Grouping für minor/patch Updates
+    groups:
+      minor-patch-updates:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+      
+      major-updates:
+        patterns:
+          - "*"
+        update-types:
+          - "major"
+    
+    # Ignore bestimmte Packages (bei Kompatibilitätsproblemen)
+    # ignore:
+    #   - dependency-name: "some-package"
+    #     versions: ["3.x"]
+    
+    # Sicherheitsupdates sofort
+    security-updates:
+      enabled: true
+
+  # ===========================================================================
+  # Bot Dependencies
+  # ===========================================================================
+  - package-ecosystem: "npm"
+    directory: "/bot/discord"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Berlin"
+    
+    open-pull-requests-limit: 10
+    target-branch: "main"
+    
+    reviewers:
+      - "medisync/security-team"
+    assignees:
+      - "medisync/maintainers"
+    
+    commit-message:
+      prefix: "chore(bot)"
+      include: "scope"
+    
+    labels:
+      - "dependencies"
+      - "bot"
+      - "security"
+    
+    groups:
+      minor-patch-updates:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+      
+      major-updates:
+        patterns:
+          - "*"
+        update-types:
+          - "major"
+
+  # ===========================================================================
+  # Dashboard Dependencies
+  # ===========================================================================
+  - package-ecosystem: "npm"
+    directory: "/dashboard"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Berlin"
+    
+    open-pull-requests-limit: 10
+    target-branch: "main"
+    
+    reviewers:
+      - "medisync/security-team"
+    assignees:
+      - "medisync/maintainers"
+    
+    commit-message:
+      prefix: "chore(dashboard)"
+      include: "scope"
+    
+    labels:
+      - "dependencies"
+      - "dashboard"
+      - "security"
+    
+    groups:
+      minor-patch-updates:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+      
+      major-updates:
+        patterns:
+          - "*"
+        update-types:
+          - "major"
+
+  # ===========================================================================
+  # VS Code Extension Dependencies
+  # ===========================================================================
+  - package-ecosystem: "npm"
+    directory: "/code-server/extensions/medical-ai-extension"
+    schedule:
+      interval: "monthly"  # Weniger häufig für Extension
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Berlin"
+    
+    open-pull-requests-limit: 5
+    target-branch: "main"
+    
+    reviewers:
+      - "medisync/security-team"
+    
+    commit-message:
+      prefix: "chore(extension)"
+      include: "scope"
+    
+    labels:
+      - "dependencies"
+      - "extension"
+
+  # ===========================================================================
+  # GitHub Actions
+  # ===========================================================================
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Berlin"
+    
+    open-pull-requests-limit: 5
+    target-branch: "main"
+    
+    reviewers:
+      - "medisync/security-team"
+    
+    commit-message:
+      prefix: "chore(actions)"
+      include: "scope"
+    
+    labels:
+      - "dependencies"
+      - "github-actions"
+
+  # ===========================================================================
+  # Docker Images
+  # ===========================================================================
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Berlin"
+    
+    open-pull-requests-limit: 5
+    target-branch: "main"
+    
+    reviewers:
+      - "medisync/security-team"
+    
+    commit-message:
+      prefix: "chore(docker)"
+      include: "scope"
+    
+    labels:
+      - "dependencies"
+      - "docker"
+
+# =============================================================================
+# Registries (falls private Packages verwendet werden)
+# =============================================================================
+# registries:
+#   npm-github:
+#     type: npm-registry
+#     url: https://npm.pkg.github.com
+#     token: ${{ secrets.GITHUB_TOKEN }}

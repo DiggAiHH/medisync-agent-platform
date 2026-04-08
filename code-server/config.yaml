@@ -1,0 +1,71 @@
+# Code-Server Konfiguration für Agents-Platform
+# https://coder.com/docs/code-server/latest/FAQ
+
+# Bind Address
+bind-addr: 0.0.0.0:8080
+
+# Authentifizierung
+# Optionen: password, none
+auth: password
+
+# Passwort (wenn auth: password)
+# Wird aus Umgebungsvariable gelesen oder hier gesetzt
+# password: "your-secure-password"
+
+# Zertifikat (für HTTPS)
+# cert: /path/to/cert.pem
+# cert-key: /path/to/cert-key.pem
+
+# Extension Verzeichnisse
+# Lokale Extensions werden hier gesucht
+extensions-dir: ~/.local/share/code-server/extensions
+
+# Zusätzliche Extension-Verzeichnisse (komma-getrennt)
+# Dies ermöglicht das Laden der Medical AI Extension
+extra-extensions-dir: 
+  - ./extensions
+
+# User Daten-Verzeichnis
+user-data-dir: ~/.local/share/code-server
+
+# Session
+# session-duration: 24h
+
+# Log Level
+# Mögliche Werte: trace, debug, info, warn, error
+log: info
+
+# Vertrauenswürdige Domains (für Webviews)
+# without-connection-token: true
+
+# Proxy-Einstellungen
+# proxy-domain: example.com
+
+# Disable Telemetry
+disable-telemetry: true
+
+# Disable Update Check
+disable-update-check: true
+
+# Medical AI Extension Konfiguration
+# Diese Werte werden als Default verwendet, können aber überschrieben werden
+medical-ai:
+  # LLM Provider: auto, ollama, github, backend
+  default-provider: auto
+  
+  # Ollama Konfiguration
+  ollama:
+    host: ${OLLAMA_HOST:-http://localhost:11434}
+    model: ${OLLAMA_MODEL:-llama3.2}
+    embedding-model: ${OLLAMA_EMBEDDING_MODEL:-nomic-embed-text}
+  
+  # GitHub Models Konfiguration
+  github-models:
+    enabled: true
+    model: ${GITHUB_MODELS_MODEL:-gpt-4o-mini}
+    # Token wird aus GITHUB_TOKEN Umgebungsvariable gelesen
+  
+  # Backend API Konfiguration
+  backend:
+    url: ${BACKEND_API_URL:-http://localhost:3001}
+    # API Key wird aus BACKEND_API_KEY Umgebungsvariable gelesen

@@ -1,0 +1,275 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    // ==========================================
+    // API Server
+    // ==========================================
+    {
+      "name": "🚀 API Server",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "ts-node",
+        "--transpile-only",
+        "src/server.ts"
+      ],
+      "cwd": "${workspaceFolder}/backend",
+      "env": {
+        "NODE_ENV": "development",
+        "PORT": "3000",
+        "WS_PORT": "8080",
+        "REDIS_URL": "redis://localhost:6379",
+        "DEBUG": "medisync:*"
+      },
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "restart": true,
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceFolder}/backend/dist/**/*.js"
+      ],
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "presentation": {
+        "group": "servers",
+        "order": 1
+      }
+    },
+    
+    // ==========================================
+    // Worker
+    // ==========================================
+    {
+      "name": "⚙️ Agent Worker",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "ts-node",
+        "--transpile-only",
+        "src/worker/index.ts"
+      ],
+      "cwd": "${workspaceFolder}/backend",
+      "env": {
+        "NODE_ENV": "development",
+        "REDIS_URL": "redis://localhost:6379",
+        "CONCURRENCY": "5",
+        "DEBUG": "medisync:worker:*"
+      },
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "restart": true,
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceFolder}/backend/dist/**/*.js"
+      ],
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "presentation": {
+        "group": "servers",
+        "order": 2
+      }
+    },
+    
+    // ==========================================
+    // Discord Bot
+    // ==========================================
+    {
+      "name": "🤖 Discord Bot",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "ts-node",
+        "--transpile-only",
+        "src/bot.ts"
+      ],
+      "cwd": "${workspaceFolder}/bot/discord",
+      "env": {
+        "NODE_ENV": "development",
+        "DEBUG": "medisync:bot:*"
+      },
+      "envFile": "${workspaceFolder}/bot/discord/.env",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "restart": true,
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceFolder}/bot/discord/dist/**/*.js"
+      ],
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "presentation": {
+        "group": "servers",
+        "order": 3
+      }
+    },
+    
+    // ==========================================
+    // Dashboard (Vite Dev Server)
+    // ==========================================
+    {
+      "name": "📊 Dashboard",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
+      "cwd": "${workspaceFolder}/dashboard",
+      "env": {
+        "NODE_ENV": "development",
+        "VITE_API_URL": "http://localhost:3000",
+        "VITE_WS_URL": "ws://localhost:8080"
+      },
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "presentation": {
+        "group": "frontend",
+        "order": 1
+      }
+    },
+    
+    // ==========================================
+    // VS Code Extension
+    // ==========================================
+    {
+      "name": "🧩 VS Code Extension",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}/code-server/extensions/medical-ai-extension"
+      ],
+      "outFiles": [
+        "${workspaceFolder}/code-server/extensions/medical-ai-extension/out/**/*.js"
+      ],
+      "preLaunchTask": "npm: compile - code-server/extensions/medical-ai-extension",
+      "presentation": {
+        "group": "extension",
+        "order": 1
+      }
+    },
+    
+    // ==========================================
+    // Tests
+    // ==========================================
+    {
+      "name": "🧪 Run All Tests",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "test"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "presentation": {
+        "group": "test",
+        "order": 1
+      }
+    },
+    {
+      "name": "🧪 Backend Tests",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "test"
+      ],
+      "cwd": "${workspaceFolder}/backend",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "presentation": {
+        "group": "test",
+        "order": 2
+      }
+    },
+    {
+      "name": "🧪 Extension Tests",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}/code-server/extensions/medical-ai-extension",
+        "--extensionTestsPath=${workspaceFolder}/code-server/extensions/medical-ai-extension/out/test/suite/index"
+      ],
+      "outFiles": [
+        "${workspaceFolder}/code-server/extensions/medical-ai-extension/out/test/**/*.js"
+      ],
+      "preLaunchTask": "npm: watch - code-server/extensions/medical-ai-extension",
+      "presentation": {
+        "group": "test",
+        "order": 3
+      }
+    },
+    
+    // ==========================================
+    // Attach to Process
+    // ==========================================
+    {
+      "name": "🔗 Attach to Process",
+      "type": "node",
+      "request": "attach",
+      "port": 9229,
+      "restart": true,
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceFolder}/**/dist/**/*.js"
+      ],
+      "presentation": {
+        "group": "attach",
+        "order": 1
+      }
+    }
+  ],
+  
+  "compounds": [
+    {
+      "name": "▶️ Start All Services",
+      "configurations": [
+        "🚀 API Server",
+        "⚙️ Agent Worker",
+        "📊 Dashboard"
+      ],
+      "stopAll": true,
+      "presentation": {
+        "group": "compounds",
+        "order": 1
+      }
+    },
+    {
+      "name": "▶️ Start with Bot",
+      "configurations": [
+        "🚀 API Server",
+        "⚙️ Agent Worker",
+        "🤖 Discord Bot",
+        "📊 Dashboard"
+      ],
+      "stopAll": true,
+      "presentation": {
+        "group": "compounds",
+        "order": 2
+      }
+    },
+    {
+      "name": "▶️ Debug Mode",
+      "configurations": [
+        "🚀 API Server",
+        "⚙️ Agent Worker"
+      ],
+      "preLaunchTask": "Start Redis",
+      "stopAll": true,
+      "presentation": {
+        "group": "compounds",
+        "order": 3
+      }
+    }
+  ]
+}

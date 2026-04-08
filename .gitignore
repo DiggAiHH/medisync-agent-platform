@@ -1,0 +1,54 @@
+# =============================================================================
+# Environment Variables & Secrets
+# =============================================================================
+.env
+.env.*
+!.env.example
+!.env.cloudflare.example
+!.env.*.example
+
+# Backup files (from security fix)
+*.backup
+*.bak
+
+# Cloudflare Tunnel
+tunnel-credentials.json
+.cloudflared/*.json
+.tunnel_id
+
+# Logs
+*.log
+logs/
+/var/log/cloudflared/
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+build/
+out/
+
+# TypeScript
+*.tsbuildinfo
+
+# IDE
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+.nyc_output/
+
+# Temporary files
+tmp/
+temp/
+*.tmp

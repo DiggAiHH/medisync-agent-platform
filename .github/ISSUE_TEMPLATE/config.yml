@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🤔 Fragen & Diskussionen
+    url: https://github.com/dein-username/agents-platform/discussions
+    about: Für Fragen, Ideen und allgemeine Diskussionen
+  - name: 📖 Dokumentation
+    url: https://github.com/dein-username/agents-platform/tree/main/docs
+    about: Dokumentation und Guides
+  - name: 💬 Discord Community
+    url: https://discord.gg/medisync
+    about: Tritt unserer Discord Community bei

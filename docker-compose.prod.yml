@@ -1,0 +1,397 @@
+# =============================================================================
+# MediSync Agenten-Plattform - Production Docker Compose
+# =============================================================================
+# 
+# Sicherheitsfeatures:
+# - Non-root Container
+# - Read-only Root Filesystem
+# - Resource Limits (CPU/Memory)
+# - Security-optimierte Images
+# - Health Checks
+# - Secrets Management
+# - Network Isolation
+#
+# Verwendung:
+#   docker-compose -f docker-compose.prod.yml up -d
+#
+# =============================================================================
+
+version: '3.8'
+
+# =============================================================================
+# Services
+# =============================================================================
+
+services:
+  # ===========================================================================
+  # Redis - Message Queue & Cache
+  # ===========================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: medisync-redis
+    restart: unless-stopped
+    
+    security_opt:
+      - no-new-privileges:true
+    
+    read_only: true
+    
+    tmpfs:
+      - /tmp:noexec,nosuid,size=100m
+      - /data:size=1g,mode=700
+    
+    user: "999:999"  # Redis user
+    
+    command: >
+      redis-server
+      --appendonly yes
+      --appendfsync everysec
+      --maxmemory 512mb
+      --maxmemory-policy allkeys-lru
+      --requirepass ${REDIS_PASSWORD}
+    
+    volumes:
+      - redis-data:/data
+    
+    networks:
+      - backend-network
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ===========================================================================
+  # Backend API Server
+  # ===========================================================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        - NODE_ENV=production
+    
+    image: medisync/backend:latest
+    container_name: medisync-backend
+    restart: unless-stopped
+    
+    security_opt:
+      - no-new-privileges:true
+    
+    read_only: true
+    
+    tmpfs:
+      - /tmp:noexec,nosuid,size=100m
+    
+    user: "1000:1000"  # Non-root user
+    
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - WS_PORT=8080
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - JWT_SECRET=${JWT_SECRET}
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
+      - LOG_LEVEL=info
+      - LOG_DIR=/logs
+    
+    volumes:
+      - backend-logs:/logs:rw
+      - /etc/localtime:/etc/localtime:ro
+    
+    networks:
+      - backend-network
+      - frontend-network
+    
+    ports:
+      - "127.0.0.1:3000:3000"  # Nur localhost (via Reverse Proxy)
+      - "127.0.0.1:8080:8080"  # WebSocket
+    
+    depends_on:
+      redis:
+        condition: service_healthy
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+    
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 65536
+        hard: 65536
+
+  # ===========================================================================
+  # Worker - Job Processor
+  # ===========================================================================
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.worker
+    
+    image: medisync/worker:latest
+    container_name: medisync-worker
+    restart: unless-stopped
+    
+    security_opt:
+      - no-new-privileges:true
+    
+    read_only: true
+    
+    tmpfs:
+      - /tmp:noexec,nosuid,size=100m
+    
+    user: "1000:1000"
+    
+    environment:
+      - NODE_ENV=production
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - LOG_LEVEL=info
+      - LOG_DIR=/logs
+      - MAX_CONCURRENT_JOBS=5
+    
+    volumes:
+      - worker-logs:/logs:rw
+      - /etc/localtime:/etc/localtime:ro
+    
+    networks:
+      - backend-network
+    
+    depends_on:
+      redis:
+        condition: service_healthy
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+      replicas: 2  # Mehrere Worker für Skalierung
+    
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "node"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+
+  # ===========================================================================
+  # Dashboard (Static Files via Nginx)
+  # ===========================================================================
+  dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    
+    image: medisync/dashboard:latest
+    container_name: medisync-dashboard
+    restart: unless-stopped
+    
+    security_opt:
+      - no-new-privileges:true
+    
+    read_only: true
+    
+    tmpfs:
+      - /tmp:noexec,nosuid,size=50m
+      - /var/cache/nginx:size=50m,mode=755
+      - /var/run:size=50m,mode=755
+    
+    user: "101:101"  # Nginx user
+    
+    environment:
+      - NGINX_ENTRYPOINT_QUIET_LOGS=1
+    
+    networks:
+      - frontend-network
+    
+    ports:
+      - "127.0.0.1:8081:80"  # Nur localhost
+    
+    depends_on:
+      - backend
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 128M
+        reservations:
+          cpus: '0.1'
+          memory: 64M
+    
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ===========================================================================
+  # Nginx Reverse Proxy (Optional)
+  # ===========================================================================
+  nginx:
+    image: nginx:alpine
+    container_name: medisync-nginx
+    restart: unless-stopped
+    
+    security_opt:
+      - no-new-privileges:true
+    
+    read_only: true
+    
+    tmpfs:
+      - /tmp:noexec,nosuid,size=50m
+      - /var/cache/nginx:size=100m,mode=755
+      - /var/run:size=50m,mode=755
+    
+    user: "101:101"
+    
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - nginx-logs:/var/log/nginx:rw
+    
+    networks:
+      - frontend-network
+    
+    ports:
+      - "80:80"
+      - "443:443"
+    
+    depends_on:
+      - backend
+      - dashboard
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 128M
+    
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    
+    profiles:
+      - with-nginx  # Nur bei explizitem --profile with-nginx
+
+  # ===========================================================================
+  # Log Aggregation (Optional - Fluent Bit)
+  # ===========================================================================
+  fluent-bit:
+    image: fluent/fluent-bit:latest
+    container_name: medisync-fluent-bit
+    restart: unless-stopped
+    
+    security_opt:
+      - no-new-privileges:true
+    
+    user: "1000:1000"
+    
+    volumes:
+      - ./fluent-bit/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf:ro
+      - backend-logs:/logs/backend:ro
+      - worker-logs:/logs/worker:ro
+      - nginx-logs:/logs/nginx:ro
+    
+    networks:
+      - backend-network
+    
+    profiles:
+      - logging
+
+# =============================================================================
+# Volumes
+# =============================================================================
+
+volumes:
+  redis-data:
+    driver: local
+  
+  backend-logs:
+    driver: local
+  
+  worker-logs:
+    driver: local
+  
+  nginx-logs:
+    driver: local
+
+# =============================================================================
+# Networks
+# =============================================================================
+
+networks:
+  backend-network:
+    driver: bridge
+    internal: true  # Kein externer Zugriff
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+  
+  frontend-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.0.0/16

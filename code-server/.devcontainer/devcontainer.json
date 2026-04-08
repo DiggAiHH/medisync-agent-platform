@@ -1,0 +1,49 @@
+{
+  "name": "Agents-Platform Code-Server",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:20",
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "configureZshAsDefaultShell": true,
+      "installOhMyZsh": true
+    },
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+  "postCreateCommand": "bash .devcontainer/postCreateCommand.sh",
+  "forwardPorts": [8080, 11434, 3001],
+  "portsAttributes": {
+    "8080": {
+      "label": "code-server",
+      "onAutoForward": "openBrowser"
+    },
+    "11434": {
+      "label": "Ollama",
+      "onAutoForward": "notify"
+    },
+    "3001": {
+      "label": "Backend API",
+      "onAutoForward": "notify"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "ms-vscode.vscode-typescript-next"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  },
+  "remoteEnv": {
+    "OLLAMA_HOST": "http://localhost:11434",
+    "OLLAMA_MODEL": "llama3.2",
+    "BACKEND_API_URL": "http://localhost:3001"
+  },
+  "mounts": [
+    "source=${localEnv:HOME}/.ollama,target=/root/.ollama,type=bind,consistency=cached"
+  ]
+}

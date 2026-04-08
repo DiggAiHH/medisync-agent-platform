@@ -1,0 +1,53 @@
+# MediSync Agent Platform - GitHub Codespaces Prebuild Configuration
+# Diese Datei konfiguriert Prebuilds für schnellere Codespace-Starts
+#
+# Dokumentation: https://docs.github.com/en/codespaces/prebuilding-your-codespaces
+
+# Für welche Branches sollen Prebuilds erstellt werden?
+branches:
+  - main
+  - develop
+  - 'feature/*'
+  - 'release/*'
+
+# Pull-Request Konfiguration
+pull_requests:
+  # Prebuilds für PRs aus Forks
+  from_forks:
+    # Akzeptiere Prebuild-Konfiguration aus Forks
+    accept_config: true
+
+# Geplante Prebuilds (optional, für regelmäßige Updates)
+# Die Zeiten sind in UTC
+schedule:
+  # Täglich um 3:00 UTC (5:00 MESZ / 4:00 MEZ)
+  - cron: '0 3 * * *'
+    branches:
+      - main
+      - develop
+  # Wöchentlich am Sonntag um 0:00 UTC (vollständiger Rebuild)
+  - cron: '0 0 * * 0'
+    branches:
+      - main
+
+# Retention Policy
+# Wie lange werden Prebuilds aufbewahrt?
+retention:
+  # Anzahl der Prebuilds pro Branch, die behalten werden
+  count: 5
+  # Tage nach denen alte Prebuilds gelöscht werden
+  days: 7
+
+# Benachrichtigungen
+notifications:
+  # Benachrichtige bei Fehlern
+  on_failure: true
+  # Benachrichtige bei erfolgreichem Prebuild
+  on_success: false
+
+# Spezifische Konfigurationen pro Region
+regions:
+  - us-west2
+  - us-east1
+  - europe-west1
+  - asia-northeast1

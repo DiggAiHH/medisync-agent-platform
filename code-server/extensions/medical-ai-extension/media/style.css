@@ -1,0 +1,1535 @@
+/* Medical AI Extension - Styles */
+/* WCAG 2.1 AA Compliant */
+
+/* ============================================
+   ACCESSIBILITY - Screenreader Only
+   ============================================ */
+
+.sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* ARIA Live Regions (sollten nicht sichtbar sein) */
+[aria-live] {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+/* Focus Styles für Keyboard Navigation */
+button:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+input:focus-visible {
+    outline: 2px solid var(--medical-primary);
+    outline-offset: 2px;
+}
+
+:root {
+    /* VS Code Theme Variables */
+    --vscode-bg: var(--vscode-editor-background, #1e1e1e);
+    --vscode-fg: var(--vscode-editor-foreground, #d4d4d4);
+    --vscode-border: var(--vscode-panel-border, #3c3c3c);
+    --vscode-button-bg: var(--vscode-button-background, #0e639c);
+    --vscode-button-fg: var(--vscode-button-foreground, #ffffff);
+    --vscode-button-hover: var(--vscode-button-hoverBackground, #1177bb);
+    --vscode-input-bg: var(--vscode-input-background, #3c3c3c);
+    --vscode-input-fg: var(--vscode-input-foreground, #cccccc);
+    --vscode-input-border: var(--vscode-input-border, #3c3c3c);
+    --vscode-focus: var(--vscode-focusBorder, #007fd4);
+    --vscode-editor-inactiveSelectionBackground: var(--vscode-editor-inactiveSelectionBackground, #3a3d41);
+    
+    /* Medical Colors - High Contrast */
+    --medical-primary: #0066CC;
+    --medical-primary-light: #4A9EFF;
+    --medical-success: #388E3C;
+    --medical-warning: #F57C00;
+    --medical-critical: #D32F2F;
+    --medical-info: #1976D2;
+    
+    /* Spacing */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 12px;
+    --spacing-lg: 16px;
+    --spacing-xl: 24px;
+    
+    /* Touch Target Size - 44px minimum */
+    --touch-target: 44px;
+    
+    /* Border Radius */
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+}
+
+/* Reset & Base */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--vscode-font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--vscode-fg);
+    background-color: var(--vscode-bg);
+}
+
+/* Container */
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: var(--spacing-md);
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--vscode-border);
+    margin-bottom: var(--spacing-md);
+}
+
+.header h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Status Indicator */
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: 11px;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--medical-warning);
+    transition: background-color 0.3s ease;
+}
+
+.status-dot.connected {
+    background-color: var(--medical-success);
+}
+
+.status-dot.error {
+    background-color: var(--medical-critical);
+}
+
+/* ==================== MODEL SELECTOR ==================== */
+
+.model-selector {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--vscode-input-bg);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.model-selector label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--vscode-fg);
+    white-space: nowrap;
+}
+
+.model-selector select {
+    flex: 1;
+    min-height: 32px;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background-color: var(--vscode-bg);
+    color: var(--vscode-fg);
+    border: 1px solid var(--vscode-border);
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.model-selector select:focus-visible {
+    outline: 2px solid var(--vscode-focus);
+    outline-offset: 2px;
+}
+
+.model-selector select:hover {
+    border-color: var(--vscode-focus);
+}
+
+/* ==================== TRUST INDICATORS ==================== */
+
+.trust-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--vscode-editor-inactiveSelectionBackground);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--spacing-md);
+    font-size: 12px;
+    align-items: center;
+}
+
+.trust-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+}
+
+.trust-badge.success {
+    background-color: rgba(56, 142, 60, 0.15);
+    color: var(--medical-success);
+}
+
+.trust-badge.warning {
+    background-color: rgba(245, 124, 0, 0.15);
+    color: var(--medical-warning);
+}
+
+.trust-badge.error {
+    background-color: rgba(211, 47, 47, 0.15);
+    color: var(--medical-critical);
+}
+
+.trust-icon {
+    font-size: 14px;
+}
+
+.trust-text {
+    font-size: 11px;
+}
+
+.trust-score {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background-color: var(--vscode-bg);
+    border-radius: var(--radius-sm);
+}
+
+.trust-label {
+    color: var(--vscode-fg);
+    opacity: 0.7;
+    font-size: 11px;
+}
+
+.trust-value {
+    font-weight: 600;
+    font-size: 11px;
+}
+
+.trust-time {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background-color: var(--vscode-bg);
+    border-radius: var(--radius-sm);
+    color: var(--vscode-fg);
+    opacity: 0.8;
+}
+
+.trust-model {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background-color: var(--vscode-bg);
+    border-radius: var(--radius-sm);
+    margin-left: auto;
+}
+
+.trust-model .trust-value {
+    font-family: 'SF Mono', Consolas, monospace;
+    font-size: 10px;
+    color: var(--medical-primary-light);
+}
+
+/* ==================== ONE-CLICK ACTIONS ==================== */
+
+.one-click-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--vscode-border);
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    min-height: 36px; /* Fitts's Law - slightly larger than 32px */
+    min-width: 80px;
+    padding: var(--spacing-xs) var(--spacing-md);
+    background-color: var(--vscode-input-bg);
+    color: var(--vscode-fg);
+    border: 1px solid var(--vscode-border);
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+    background-color: var(--vscode-border);
+    transform: translateY(-1px);
+}
+
+.action-btn:active {
+    transform: translateY(0);
+}
+
+.action-btn:focus-visible {
+    outline: 2px solid var(--vscode-focus);
+    outline-offset: 2px;
+}
+
+.action-btn.primary {
+    background-color: var(--medical-primary);
+    color: white;
+    border-color: var(--medical-primary);
+}
+
+.action-btn.primary:hover {
+    background-color: var(--medical-primary-light);
+    border-color: var(--medical-primary-light);
+}
+
+.action-btn.primary:focus-visible {
+    outline-color: var(--medical-primary-light);
+}
+
+/* Apply Button */
+.action-btn-apply {
+    background: var(--medical-primary);
+    color: white;
+    border-color: transparent;
+}
+
+.action-btn-apply:hover {
+    background: var(--vscode-button-hoverBackground);
+    filter: brightness(1.1);
+}
+
+/* Copy Button */
+.action-btn-copy {
+    background: var(--vscode-editor-background);
+    color: var(--vscode-foreground);
+}
+
+.action-btn-copy.copied {
+    background: var(--medical-success);
+    color: white;
+    border-color: var(--medical-success);
+}
+
+.action-btn-copy.copied .action-icon,
+.action-btn-copy.copied .action-text {
+    color: white;
+}
+
+/* Retry Button */
+.action-btn-retry {
+    background: transparent;
+    color: var(--vscode-descriptionForeground);
+    border-style: dashed;
+}
+
+.action-btn-retry:hover {
+    background: var(--vscode-editor-background);
+    color: var(--vscode-foreground);
+    border-style: solid;
+}
+
+.action-btn-retry .action-icon {
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.action-btn-retry:hover .action-icon {
+    transform: rotate(180deg);
+}
+
+.action-icon {
+    font-size: 14px;
+}
+
+.action-text {
+    font-size: 12px;
+}
+
+.action-shortcut {
+    margin-left: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-xs);
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-sm);
+    font-size: 10px;
+    opacity: 0.8;
+}
+
+/* ==================== PROGRESSIVE DISCLOSURE ==================== */
+
+.progressive-section {
+    margin: var(--spacing-sm) 0;
+    border: 1px solid var(--vscode-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.progressive-section[open] {
+    background-color: var(--vscode-input-bg);
+}
+
+.progressive-section summary {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--vscode-bg);
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 13px;
+    user-select: none;
+    transition: background-color 0.2s ease;
+    list-style: none;
+}
+
+.progressive-section summary::-webkit-details-marker {
+    display: none;
+}
+
+.progressive-section summary:hover {
+    background-color: var(--vscode-input-bg);
+}
+
+.progressive-section summary:focus-visible {
+    outline: 2px solid var(--vscode-focus);
+    outline-offset: -2px;
+}
+
+.summary-icon {
+    font-size: 10px;
+    transition: transform 0.2s ease;
+    color: var(--medical-primary-light);
+}
+
+.progressive-section[open] .summary-icon {
+    transform: rotate(90deg);
+}
+
+.summary-title {
+    flex: 1;
+}
+
+.section-content {
+    padding: var(--spacing-md);
+    background-color: var(--vscode-bg);
+    border-top: 1px solid var(--vscode-border);
+}
+
+/* ==================== TABS ==================== */
+
+.tabs {
+    display: flex;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--vscode-border);
+}
+
+.tab-btn {
+    flex: 1;
+    padding: var(--spacing-sm) var(--spacing-md);
+    min-height: var(--touch-target);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--vscode-fg);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+    background-color: var(--vscode-input-bg);
+}
+
+.tab-btn:focus-visible {
+    outline: 2px solid var(--vscode-focus);
+    outline-offset: 2px;
+}
+
+.tab-btn.active {
+    border-bottom-color: var(--medical-primary);
+    color: var(--medical-primary-light);
+}
+
+/* Tab Content */
+.tab-content {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.tab-content.active {
+    display: flex;
+}
+
+/* Input Groups */
+.input-group {
+    margin-bottom: var(--spacing-md);
+}
+
+textarea {
+    width: 100%;
+    padding: var(--spacing-md);
+    background-color: var(--vscode-input-bg);
+    color: var(--vscode-input-fg);
+    border: 1px solid var(--vscode-input-border);
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 1.5;
+    resize: vertical;
+    min-height: 80px;
+    transition: border-color 0.2s ease;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: var(--vscode-focus);
+}
+
+textarea::placeholder {
+    color: var(--vscode-fg);
+    opacity: 0.5;
+}
+
+textarea:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Chat Input Group */
+.chat-input-group {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-top: auto;
+}
+
+.chat-input-group textarea {
+    flex: 1;
+    min-height: var(--touch-target);
+    resize: none;
+}
+
+/* Chat Actions - Container for Send/Stop buttons */
+.chat-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.chat-actions button {
+    min-width: var(--touch-target);
+    min-height: var(--touch-target);
+}
+
+/* Chat History */
+.chat-history {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    background-color: var(--vscode-input-bg);
+    border-radius: var(--radius-md);
+}
+
+.chat-message {
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    max-width: 90%;
+}
+
+.chat-message.user {
+    background-color: var(--medical-primary);
+    color: white;
+    margin-left: auto;
+}
+
+.chat-message.assistant {
+    background-color: var(--vscode-border);
+    margin-right: auto;
+}
+
+.chat-message .timestamp {
+    font-size: 10px;
+    opacity: 0.7;
+    margin-top: var(--spacing-xs);
+}
+
+/* Buttons */
+.button-group {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+}
+
+button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm) var(--spacing-md);
+    min-height: var(--touch-target);
+    min-width: var(--touch-target);
+    border: none;
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+button:focus-visible {
+    outline: 2px solid var(--vscode-focus);
+    outline-offset: 2px;
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background-color: var(--vscode-button-bg);
+    color: var(--vscode-button-fg);
+    flex: 1;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background-color: var(--vscode-button-hover);
+}
+
+.btn-primary:active {
+    transform: translateY(1px);
+}
+
+.btn-secondary {
+    background-color: var(--vscode-input-bg);
+    color: var(--vscode-fg);
+    border: 1px solid var(--vscode-border);
+    flex: 1;
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background-color: var(--vscode-border);
+}
+
+/* Danger Button (Stop Streaming) */
+.btn-danger {
+    background: var(--medical-critical);
+    color: white;
+    border: none;
+    font-weight: 600;
+}
+
+.btn-danger:hover:not(:disabled) {
+    background: #B71C1C;
+}
+
+/* Hidden utility class */
+.hidden {
+    display: none !important;
+}
+
+/* Result Container */
+.result-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--spacing-md);
+    background-color: var(--vscode-input-bg);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--vscode-border);
+}
+
+.result-container:empty {
+    display: none;
+}
+
+/* Analysis Result */
+.analysis-result h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+    color: var(--medical-primary-light);
+}
+
+.analysis-result .summary {
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-md);
+    background-color: var(--vscode-bg);
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--medical-info);
+}
+
+.analysis-result ul {
+    list-style: none;
+    padding: 0;
+}
+
+.analysis-result li {
+    padding: var(--spacing-sm) var(--spacing-md);
+    margin-bottom: var(--spacing-xs);
+    background-color: var(--vscode-bg);
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--medical-success);
+}
+
+.key-points-list,
+.suggestions-list {
+    list-style: none;
+    padding: 0;
+}
+
+.key-point-item,
+.suggestion-item {
+    padding: var(--spacing-sm) var(--spacing-md);
+    margin-bottom: var(--spacing-xs);
+    background-color: var(--vscode-bg);
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--medical-success);
+    position: relative;
+    padding-left: 32px;
+}
+
+.key-point-item::before,
+.suggestion-item::before {
+    content: "✓";
+    color: var(--medical-success);
+    position: absolute;
+    left: 12px;
+    font-weight: bold;
+}
+
+.suggestion-item::before {
+    content: "💡";
+}
+
+/* ICD-10 Results */
+.icd10-results {
+    margin-bottom: var(--spacing-md);
+}
+
+.icd10-list {
+    list-style: none;
+    padding: 0;
+}
+
+.icd10-item {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+    margin-bottom: var(--spacing-xs);
+    background-color: var(--vscode-bg);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.icd10-item:hover {
+    background-color: var(--vscode-border);
+}
+
+.icd10-item:focus-visible {
+    outline: 2px solid var(--vscode-focus);
+    outline-offset: -2px;
+}
+
+.icd10-item .code {
+    font-family: 'SF Mono', Consolas, monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--medical-primary-light);
+    min-width: 80px;
+    margin-right: var(--spacing-md);
+}
+
+.icd10-item .description {
+    flex: 1;
+    font-size: 12px;
+}
+
+.icd10-item .copy-btn {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    min-height: 32px;
+    min-width: 32px;
+    font-size: 14px;
+    background-color: transparent;
+    border: 1px solid var(--vscode-border);
+    border-radius: var(--radius-sm);
+    opacity: 0.6;
+    transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+
+.icd10-item:hover .copy-btn {
+    opacity: 1;
+}
+
+.icd10-item .copy-btn:hover {
+    background-color: var(--vscode-input-bg);
+}
+
+/* Status Bar */
+.status-bar {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 11px;
+    color: var(--vscode-fg);
+    opacity: 0.7;
+    text-align: center;
+    min-height: var(--touch-target);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.status-bar:empty {
+    display: none;
+}
+
+/* Loading Spinner */
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xl);
+}
+
+.loading::after {
+    content: "";
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--vscode-border);
+    border-top-color: var(--medical-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Error Message */
+.error-message {
+    padding: var(--spacing-md);
+    background-color: rgba(211, 47, 47, 0.1);
+    border: 1px solid var(--medical-critical);
+    border-radius: var(--radius-md);
+    color: var(--medical-critical);
+    font-size: 13px;
+}
+
+/* Success Message */
+.success-message {
+    padding: var(--spacing-md);
+    background-color: rgba(56, 142, 60, 0.1);
+    border: 1px solid var(--medical-success);
+    border-radius: var(--radius-md);
+    color: var(--medical-success);
+    font-size: 13px;
+}
+
+/* Info Message */
+.info-message {
+    padding: var(--spacing-md);
+    background-color: var(--vscode-bg);
+    border: 1px solid var(--vscode-border);
+    border-radius: var(--radius-md);
+    color: var(--vscode-fg);
+    font-size: 13px;
+    text-align: center;
+    opacity: 0.8;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--vscode-input-bg);
+    border-radius: var(--radius-sm);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--vscode-border);
+    border-radius: var(--radius-sm);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--vscode-fg);
+    opacity: 0.5;
+}
+
+/* Focus Styles for Accessibility */
+*:focus-visible {
+    outline: 2px solid var(--vscode-focus);
+    outline-offset: 2px;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .loading-spinner,
+    .confidence-bar-fill,
+    .undo-toast {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    :root {
+        --medical-primary: #0066FF;
+        --medical-success: #008000;
+        --medical-warning: #FF8C00;
+        --medical-critical: #FF0000;
+    }
+    
+    button,
+    textarea,
+    .result-container,
+    .trust-bar,
+    .progressive-section {
+        border-width: 2px;
+    }
+
+    .action-btn.primary {
+        border: 2px solid currentColor;
+    }
+
+    .btn-danger {
+        border: 2px solid currentColor;
+    }
+    
+    .confidence-high {
+        border: 2px solid #388E3C;
+    }
+    
+    .confidence-medium {
+        border: 2px solid #F57C00;
+    }
+    
+    .confidence-low {
+        border: 2px solid #D32F2F;
+    }
+    
+    button:focus-visible {
+        outline: 3px solid currentColor;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .trust-bar,
+    .one-click-actions,
+    .model-selector {
+        display: none !important;
+    }
+
+    .progressive-section {
+        break-inside: avoid;
+    }
+}
+
+/* Small Screen Adjustments */
+@media (max-width: 300px) {
+    .trust-bar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .trust-model {
+        margin-left: 0;
+    }
+
+    .one-click-actions {
+        flex-direction: column;
+    }
+
+    .action-btn {
+        width: 100%;
+    }
+
+    .chat-actions {
+        flex-direction: column;
+    }
+}
+
+/* ============================================
+   CONFIDENCE INDICATOR - Trust Calibration
+   Basierend auf: Wang et al. (2022), Zhang et al. (2020)
+   ============================================ */
+
+.confidence-indicator {
+    margin: 16px 0;
+    padding: 12px;
+    background: var(--vscode-editor-background);
+    border: 1px solid var(--vscode-panel-border);
+    border-radius: 6px;
+}
+
+.confidence-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.confidence-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.confidence-high {
+    background: rgba(56, 142, 60, 0.15);
+    color: #388E3C;
+    border: 1px solid rgba(56, 142, 60, 0.3);
+}
+
+.confidence-medium {
+    background: rgba(245, 124, 0, 0.15);
+    color: #F57C00;
+    border: 1px solid rgba(245, 124, 0, 0.3);
+}
+
+.confidence-low {
+    background: rgba(211, 47, 47, 0.15);
+    color: #D32F2F;
+    border: 1px solid rgba(211, 47, 47, 0.3);
+}
+
+.confidence-icon::before {
+    content: "●";
+    font-size: 10px;
+}
+
+.confidence-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--vscode-foreground);
+}
+
+.confidence-bar-container {
+    width: 100%;
+    height: 8px;
+    background: var(--vscode-scrollbarSlider-background);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.confidence-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: width;
+}
+
+.confidence-bar-fill.confidence-high {
+    background: linear-gradient(90deg, #4CAF50, #388E3C);
+    border: none;
+}
+
+.confidence-bar-fill.confidence-medium {
+    background: linear-gradient(90deg, #FFB74D, #F57C00);
+    border: none;
+}
+
+.confidence-bar-fill.confidence-low {
+    background: linear-gradient(90deg, #E57373, #D32F2F);
+    border: none;
+}
+
+.confidence-tooltip {
+    font-size: 11px;
+    color: var(--vscode-descriptionForeground);
+    font-style: italic;
+}
+
+/* Dark Mode Anpassungen */
+.vscode-dark .confidence-high {
+    background: rgba(76, 175, 80, 0.2);
+}
+
+.vscode-dark .confidence-medium {
+    background: rgba(255, 152, 0, 0.2);
+}
+
+.vscode-dark .confidence-low {
+    background: rgba(244, 67, 54, 0.2);
+}
+
+/* High Contrast Mode */
+.vscode-high-contrast .confidence-indicator {
+    border: 2px solid var(--vscode-contrastActiveBorder);
+}
+
+.vscode-high-contrast .confidence-badge {
+    border: 2px solid currentColor;
+}
+
+/* ============================================
+   PROCESSING TIMER - Nielsen (1993)
+   Response Time Indicators
+   ============================================ */
+
+.processing-timer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, var(--vscode-editor-background), var(--vscode-sideBar-background));
+    border: 1px solid var(--vscode-panel-border);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    transition: all 0.3s ease;
+}
+
+.processing-timer.hidden {
+    display: none !important;
+}
+
+.processing-timer.active {
+    border-color: var(--medical-primary);
+    box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
+}
+
+.processing-timer.completed {
+    border-color: #388E3C;
+    background: rgba(56, 142, 60, 0.05);
+}
+
+.timer-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--vscode-panel-border);
+    border-top-color: var(--medical-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.timer-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.timer-label {
+    font-size: 11px;
+    color: var(--vscode-descriptionForeground);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.timer-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--vscode-foreground);
+    font-variant-numeric: tabular-nums;
+    font-family: var(--vscode-editor-font-family);
+}
+
+.processing-timer.completed .timer-spinner {
+    animation: none;
+    border-color: #388E3C;
+    border-top-color: transparent;
+    position: relative;
+}
+
+.processing-timer.completed .timer-spinner::after {
+    content: "✓";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #388E3C;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* ============================================
+   MODEL INFO - Model Transparency
+   ============================================ */
+
+.model-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: var(--vscode-editor-background);
+    border: 1px solid var(--vscode-panel-border);
+    border-radius: 6px;
+    margin-top: 12px;
+}
+
+.model-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.model-icon {
+    font-size: 14px;
+}
+
+.model-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--vscode-foreground);
+}
+
+.model-disclaimer {
+    font-size: 10px;
+    color: var(--vscode-descriptionForeground);
+    font-style: italic;
+}
+
+/* ============================================
+   STOP STREAMING BUTTON - Animations
+   ============================================ */
+
+/* Stop-Button Shake Animation on Hover */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-2px); }
+    75% { transform: translateX(2px); }
+}
+
+#stopBtn:not(:disabled):hover {
+    animation: shake 0.3s ease;
+}
+
+/* Streaming Status Indicator */
+.streaming-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    background: rgba(255, 152, 0, 0.15);
+    border: 1px solid rgba(255, 152, 0, 0.3);
+    border-radius: 4px;
+    font-size: 11px;
+    color: #F57C00;
+    margin-bottom: 8px;
+}
+
+.streaming-indicator::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    background: #F57C00;
+    border-radius: 50%;
+    animation: pulse-dot 1.5s infinite;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.2); }
+}
+
+/* Button transition improvements */
+button {
+    will-change: transform;
+}
+
+/* ============================================
+   TRUST BADGES - Privacy & Compliance
+   Basierend auf: Jakesch et al. (2019), Gerke et al. (2022)
+   ============================================ */
+
+.trust-badge-container {
+    display: flex;
+    gap: 8px;
+    padding: 12px;
+    background: var(--vscode-sideBar-background);
+    border-bottom: 1px solid var(--vscode-panel-border);
+    flex-wrap: wrap;
+}
+
+.trust-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(76, 175, 80, 0.1);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    border-radius: 6px;
+    cursor: help;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.trust-badge:hover {
+    background: rgba(76, 175, 80, 0.15);
+    border-color: rgba(76, 175, 80, 0.5);
+    transform: translateY(-1px);
+}
+
+.trust-badge-dsgvo {
+    background: rgba(33, 150, 243, 0.1);
+    border-color: rgba(33, 150, 243, 0.3);
+}
+
+.trust-badge-dsgvo:hover {
+    background: rgba(33, 150, 243, 0.15);
+    border-color: rgba(33, 150, 243, 0.5);
+}
+
+.trust-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.trust-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.trust-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #4CAF50;
+    line-height: 1.2;
+}
+
+.trust-badge-dsgvo .trust-title {
+    color: #2196F3;
+}
+
+.trust-subtitle {
+    font-size: 10px;
+    color: var(--vscode-descriptionForeground);
+    line-height: 1.2;
+}
+
+/* ============================================
+   TRUST BADGE TOOLTIP
+   ============================================ */
+
+.trust-tooltip {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 8px;
+    padding: 12px;
+    background: var(--vscode-editor-background);
+    border: 1px solid var(--vscode-panel-border);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    min-width: 280px;
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: all 0.2s ease;
+}
+
+.trust-badge:hover .trust-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.tooltip-header {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--vscode-foreground);
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--vscode-panel-border);
+}
+
+.tooltip-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.tooltip-list li {
+    font-size: 11px;
+    color: var(--vscode-descriptionForeground);
+    padding: 4px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tooltip-list li:first-child {
+    color: #4CAF50;
+    font-weight: 500;
+}
+
+/* Arrow for tooltip */
+.trust-tooltip::before {
+    content: "";
+    position: absolute;
+    top: -6px;
+    left: 24px;
+    width: 10px;
+    height: 10px;
+    background: var(--vscode-editor-background);
+    border-left: 1px solid var(--vscode-panel-border);
+    border-top: 1px solid var(--vscode-panel-border);
+    transform: rotate(45deg);
+}
+
+/* ============================================
+   CONNECTION STATUS BADGE
+   ============================================ */
+
+.connection-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.connection-status.connected {
+    background: rgba(56, 142, 60, 0.15);
+    color: #388E3C;
+}
+
+.connection-status.disconnected {
+    background: rgba(211, 47, 47, 0.15);
+    color: #D32F2F;
+}
+
+.connection-status::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.connection-status.connected::before {
+    animation: pulse-green 2s infinite;
+}
+
+@keyframes pulse-green {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ============================================
+   TOUCH DEVICE SUPPORT
+   ============================================ */
+
+@media (pointer: coarse) {
+    .trust-badge.tooltip-visible .trust-tooltip {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+    
+    .trust-badge {
+        cursor: pointer;
+    }
+}
+
+/* ============================================
+   DARK MODE ADAPTATIONS
+   ============================================ */
+
+.vscode-dark .trust-badge {
+    background: rgba(76, 175, 80, 0.15);
+}
+
+.vscode-dark .trust-badge-dsgvo {
+    background: rgba(33, 150, 243, 0.15);
+}
+
+.vscode-dark .trust-tooltip {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================
+   HIGH CONTRAST MODE
+   ============================================ */
+
+.vscode-high-contrast .trust-badge {
+    border: 2px solid #4CAF50;
+}
+
+.vscode-high-contrast .trust-badge-dsgvo {
+    border: 2px solid #2196F3;
+}
+
+.vscode-high-contrast .trust-tooltip {
+    border: 2px solid var(--vscode-contrastActiveBorder);
+}
+
+/* Focus ring for danger button */
+.btn-danger:focus-visible {
+    outline: 2px solid var(--medical-critical);
+    outline-offset: 2px;
+}

@@ -1,0 +1,46 @@
+# ==========================================
+# code-server Konfiguration für MediSync
+# ==========================================
+
+# Bind-Adresse und Port
+bind-addr: 0.0.0.0:8443
+
+# Authentifizierung
+# Optionen: password, none
+# Für Entwicklung: none (da Codespaces eigene Auth hat)
+# Für Produktion: password
+auth: none
+
+# Passwort (wenn auth: password)
+# hashed-password: "$argon2i$v=19$m=4096,t=3,p=1$..."
+
+# Zertifikat (self-signed für Entwicklung)
+cert: false
+
+# Extensions Verzeichnis
+extensions-dir: /home/node/.local/share/code-server/extensions
+
+# User-Daten Verzeichnis
+user-data-dir: /home/node/.local/share/code-server/user-data
+
+# Protokoll-Einstellungen
+log: info
+
+# Vertrauenswürdige Origin für WebSocket-Verbindungen
+# Wichtig für GitHub Codespaces
+trusted-origins:
+  - "*.github.dev"
+  - "*.app.github.dev"
+  - "localhost:8443"
+  - "127.0.0.1:8443"
+
+# Disable update checks
+disable-update-check: true
+
+# Disable telemetry
+disable-telemetry: true
+
+# ==========================================
+# VS Code: Einstellungen für code-server
+# ==========================================
+# Diese werden in user-data-dir gespeichert

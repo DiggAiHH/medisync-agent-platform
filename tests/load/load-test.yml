@@ -1,0 +1,119 @@
+# MediSync Load Test Configuration
+# Verwendet Artillery (https://artillery.io/)
+# 
+# Installation:
+#   npm install -g artillery
+#
+# Ausführen:
+#   artillery run tests/load/load-test.yml
+#
+# Oder mit k6 (Alternative):
+#   k6 run tests/load/load-test-k6.js
+
+config:
+  # Test-Ziel
+  target: 'http://localhost:3000'
+  
+  # Phasen der Laststeigerung
+  phases:
+    # Phase 1: Warm-up (10 parallele Nutzer über 30 Sekunden)
+    - duration: 30
+      arrivalRate: 1
+      rampTo: 10
+      name: "Warm-up Phase"
+    
+    # Phase 2: Konstante Last (10 Nutzer für 2 Minuten)
+    - duration: 120
+      arrivalRate: 10
+      name: "Steady State"
+    
+    # Phase 3: Spike Test (kurze Lastspitze)
+    - duration: 10
+      arrivalRate: 50
+      name: "Spike Test"
+    
+    # Phase 4: Cool-down
+    - duration: 30
+      arrivalRate: 1
+      name: "Cool-down"
+
+  # Payload für dynamische Daten
+  payload:
+    - path: "test-data.csv"
+      fields:
+        - "userId"
+        - "prompt"
+      skipHeader: true
+
+  # Plugins für erweiterte Reports
+  plugins:
+    ensure: {}
+    apdex: 
+      threshold: 100
+    metrics-by-endpoint: {}
+
+  # Erwartete Schwellenwerte
+  ensure:
+    thresholds:
+      - http.response_time.p95: 10000  # 95% unter 10s
+      - http.response_time.p99: 15000  # 99% unter 15s
+      - http.error_rate: 0.05          # Max 5% Fehler
+
+scenarios:
+  # Szenario 1: Job Erstellung
+  - name: "Create Job"
+    weight: 70
+    flow:
+      - post:
+          url: "/api/jobs"
+          json:
+            prompt: "{{ prompt }}"
+            userId: "{{ userId }}"
+            sessionId: "load-test-{{ $randomString() }}"
+          capture:
+            - json: "$.data.id"
+              as: "jobId"
+          expect:
+            - statusCode: 201
+            - hasProperty: "data.id"
+            - hasProperty: "data.status"
+      
+      # Poll für Job-Status
+      - loop:
+          - get:
+              url: "/api/jobs/{{ jobId }}"
+              expect:
+                - statusCode: 200
+          - think: 2
+        while:
+          - json: "$.data.status"
+            notEquals: "completed"
+          - json: "$.data.status"
+            notEquals: "failed"
+        count: 30
+
+  # Szenario 2: Health Check
+  - name: "Health Check"
+    weight: 20
+    flow:
+      - get:
+          url: "/health"
+          expect:
+            - statusCode: 200
+            - contentType: json
+            - hasProperty: "status"
+
+  # Szenario 3: Job Liste
+  - name: "List Jobs"
+    weight: 10
+    flow:
+      - get:
+          url: "/api/jobs?limit=50"
+          expect:
+            - statusCode: 200
+            - hasProperty: "data"
+
+---
+# Alternative k6 Load Test (JavaScript)
+# Speichern als: tests/load/load-test-k6.js
+# Ausführen: k6 run tests/load/load-test-k6.js
