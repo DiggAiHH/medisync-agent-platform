@@ -133,15 +133,46 @@ class MemoryQueue {
     this.completed = [];
     this.failed = [];
   }
+
+  // Count methods for health checks
+  async getWaitingCount(): Promise<number> {
+    return this.waiting.length;
+  }
+
+  async getActiveCount(): Promise<number> {
+    return this.active.length;
+  }
+
+  async getCompletedCount(): Promise<number> {
+    return this.completed.length;
+  }
+
+  async getFailedCount(): Promise<number> {
+    return this.failed.length;
+  }
+
+  async getDelayedCount(): Promise<number> {
+    return 0; // In-memory queue doesn't support delayed jobs
+  }
 }
 
 // In-Memory Redis Implementation
 class MemoryRedis {
   private data: Map<string, { value: string; expiresAt?: number }> = new Map();
+  private sets: Map<string, Set<string>> = new Map();
+  private sortedSets: Map<string, Array<{ score: number; member: string }>> = new Map();
   private connected = true;
 
   async ping(): Promise<string> {
     return 'PONG';
+  }
+
+  async info(): Promise<string> {
+    return 'redis_version:6.0.0\r\nused_memory:1024';
+  }
+
+  duplicate(): MemoryRedis {
+    return new MemoryRedis();
   }
 
   async setex(key: string, seconds: number, value: string): Promise<string> {
@@ -160,9 +191,56 @@ class MemoryRedis {
   }
 
   async zadd(key: string, score: number, member: string): Promise<number> {
-    // Simplified zadd - just store as regular key for now
-    this.data.set(`${key}:${score}`, { value: member });
+    if (!this.sortedSets.has(key)) {
+      this.sortedSets.set(key, []);
+    }
+    const set = this.sortedSets.get(key)!;
+    const existingIndex = set.findIndex(item => item.member === member);
+    if (existingIndex >= 0) {
+      set[existingIndex].score = score;
+    } else {
+      set.push({ score, member });
+    }
+    set.sort((a, b) => a.score - b.score);
     return 1;
+  }
+
+  async zremrangebyscore(key: string, min: string | number, max: string | number): Promise<number> {
+    if (!this.sortedSets.has(key)) return 0;
+    const set = this.sortedSets.get(key)!;
+    const minScore = min === '-inf' ? -Infinity : Number(min);
+    const maxScore = max === '+inf' ? Infinity : Number(max);
+    const initialLength = set.length;
+    const filtered = set.filter(item => item.score < minScore || item.score > maxScore);
+    this.sortedSets.set(key, filtered);
+    return initialLength - filtered.length;
+  }
+
+  async zrange(key: string, start: number, stop: number): Promise<string[]> {
+    if (!this.sortedSets.has(key)) return [];
+    const set = this.sortedSets.get(key)!;
+    const end = stop === -1 ? undefined : stop + 1;
+    return set.slice(start, end).map(item => item.member);
+  }
+
+  async sadd(key: string, ...members: string[]): Promise<number> {
+    if (!this.sets.has(key)) {
+      this.sets.set(key, new Set());
+    }
+    const set = this.sets.get(key)!;
+    let added = 0;
+    for (const member of members) {
+      if (!set.has(member)) {
+        set.add(member);
+        added++;
+      }
+    }
+    return added;
+  }
+
+  async sismember(key: string, member: string): Promise<number> {
+    const set = this.sets.get(key);
+    return set && set.has(member) ? 1 : 0;
   }
 
   async expire(key: string, seconds: number): Promise<number> {

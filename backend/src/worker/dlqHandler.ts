@@ -7,7 +7,7 @@
  * - Bereinigt alte Einträge
  */
 
-import { redisConnection, agentQueue } from '../queue/agentQueue';
+import { redisConnection, agentQueue, isMemoryQueue } from '../queue/agentQueue';
 
 const DLQ_ENABLED = process.env.DLQ_ENABLED === 'true';
 const DLQ_RETENTION_DAYS = parseInt(process.env.DLQ_RETENTION_DAYS || '30', 10);
@@ -103,7 +103,8 @@ class DLQHandler {
     const attemptsMade = job.attemptsMade || 0;
     
     // Prüfe ob bereits in DLQ
-    const exists = await redisConnection.sismember('dlq:job_ids', jobId);
+    const redis = isMemoryQueue ? redisConnection as any : redisConnection;
+    const exists = await redis.sismember('dlq:job_ids', jobId);
     if (exists) return;
 
     // Erstelle DLQ Eintrag
@@ -117,14 +118,14 @@ class DLQHandler {
     };
 
     // Speichere in Sorted Set (nach Timestamp sortiert)
-    await redisConnection.zadd('dlq:jobs', Date.now(), JSON.stringify(dlqEntry));
+    await redis.zadd('dlq:jobs', Date.now(), JSON.stringify(dlqEntry));
     
     // Füge zu Job IDs Set hinzu
-    await redisConnection.sadd('dlq:job_ids', jobId);
+    await redis.sadd('dlq:job_ids', jobId);
     
     // Setze TTL
-    await redisConnection.expire('dlq:jobs', DLQ_RETENTION_DAYS * 24 * 3600);
-    await redisConnection.expire('dlq:job_ids', DLQ_RETENTION_DAYS * 24 * 3600);
+    await redis.expire('dlq:jobs', DLQ_RETENTION_DAYS * 24 * 3600);
+    await redis.expire('dlq:job_ids', DLQ_RETENTION_DAYS * 24 * 3600);
 
     console.log(`📦 Job ${jobId} zur DLQ hinzugefügt`);
 
@@ -182,7 +183,8 @@ class DLQHandler {
       const cutoffTime = Date.now() - (DLQ_RETENTION_DAYS * 24 * 60 * 60 * 1000);
       
       // Entferne alte Einträge aus Sorted Set
-      const removed = await redisConnection.zremrangebyscore('dlq:jobs', 0, cutoffTime);
+      const redis = isMemoryQueue ? redisConnection as any : redisConnection;
+      const removed = await redis.zremrangebyscore('dlq:jobs', 0, cutoffTime);
       
       if (removed > 0) {
         console.log(`📦 ${removed} alte DLQ Einträge bereinigt`);
@@ -200,8 +202,9 @@ class DLQHandler {
     inDLQ: number;
     retryable: number;
   }> {
+    const redis = isMemoryQueue ? redisConnection as any : redisConnection;
     const failedJobs = await agentQueue.getFailed(0, 1000);
-    const dlqJobs = await redisConnection.zrange('dlq:jobs', 0, -1);
+    const dlqJobs = await redis.zrange('dlq:jobs', 0, -1);
     
     let retryableCount = 0;
     for (const jobStr of dlqJobs) {

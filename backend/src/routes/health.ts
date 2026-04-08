@@ -104,7 +104,8 @@ async function checkRedisStatus(): Promise<{
     const latency = Date.now() - startTime;
 
     // Get Redis info
-    const info = await redisConnection.info('server');
+    const redis = isMemoryQueue ? redisConnection as any : redisConnection;
+    const info = await redis.info('server');
     const infoLines = info.split('\r\n');
     const infoObj: Record<string, string> = {};
 
@@ -165,21 +166,24 @@ async function getDetailedQueueStats(): Promise<{
     };
   }
 
-  const [
-    waiting,
-    active,
-    completed,
-    failed,
-    delayed,
-    paused,
-  ] = await Promise.all([
-    agentQueue.getWaitingCount(),
-    agentQueue.getActiveCount(),
-    agentQueue.getCompletedCount(),
-    agentQueue.getFailedCount(),
-    agentQueue.getDelayedCount(),
-    Promise.resolve(0),
-  ]);
+  // Get queue counts - handle both MemoryQueue and BullMQ Queue
+  let waiting: number, active: number, completed: number, failed: number, delayed: number;
+  
+  if (isMemoryQueue) {
+    // MemoryQueue has specific count methods
+    waiting = await (agentQueue as any).getWaitingCount();
+    active = await (agentQueue as any).getActiveCount();
+    completed = await (agentQueue as any).getCompletedCount();
+    failed = await (agentQueue as any).getFailedCount();
+    delayed = await (agentQueue as any).getDelayedCount();
+  } else {
+    // BullMQ Queue methods
+    waiting = await (agentQueue as any).getWaitingCount();
+    active = await (agentQueue as any).getActiveCount();
+    completed = await (agentQueue as any).getCompletedCount();
+    failed = await (agentQueue as any).getFailedCount();
+    delayed = await (agentQueue as any).getDelayedCount();
+  }
 
   const completedJobs = await agentQueue.getCompleted(0, 100);
   const processingTimes: number[] = [];
@@ -194,6 +198,8 @@ async function getDetailedQueueStats(): Promise<{
     ? processingTimes.reduce((a, b) => a + b, 0) / processingTimes.length
     : 0;
 
+  const paused = 0; // Memory queue doesn't support paused jobs
+  
   return {
     waiting,
     active,

@@ -1,6 +1,6 @@
 import { WebSocketServer, WebSocket } from 'ws';
 import { AgentJob, WebSocketMessage } from '../types';
-import { redisConnection } from '../queue/agentQueue';
+import { redisConnection, isMemoryQueue } from '../queue/agentQueue';
 
 const WS_PORT = parseInt(process.env.WS_PORT || '8080');
 
@@ -243,7 +243,7 @@ const startPingInterval = (): void => {
 
 // Redis Pub/Sub für Job-Updates
 const subscribeToJobUpdates = async (): Promise<void> => {
-  const subscriber = redisConnection.duplicate();
+  const subscriber = isMemoryQueue ? redisConnection : (redisConnection as any).duplicate();
 
   subscriber.on('message', (channel: string, message: string) => {
     try {
