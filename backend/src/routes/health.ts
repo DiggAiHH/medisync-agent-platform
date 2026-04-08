@@ -244,7 +244,13 @@ router.get('/', async (req: Request, res: Response) => {
 
     // Gesamtstatus bestimmen
     let overallStatus: 'healthy' | 'unhealthy' | 'degraded' = 'healthy';
-    if (!redisHealthy || !queueHealthy) {
+    
+    // Bei In-Memory Queue ist Redis nicht kritisch
+    const redisRequired = !isMemoryQueue;
+    
+    if (redisRequired && !redisHealthy) {
+      overallStatus = 'unhealthy';
+    } else if (!queueHealthy) {
       overallStatus = 'unhealthy';
     } else if (!modelsStatus.available) {
       overallStatus = 'degraded';
