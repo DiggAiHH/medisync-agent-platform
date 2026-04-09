@@ -94,9 +94,10 @@ app.use(createCorsMiddleware());
 // 4. Body Parsing mit Limits
 app.use(express.json({ 
   limit: '10mb',
-  verify: (req, res, buf) => {
+  verify: (req: express.Request, _res: express.Response, buf: Buffer) => {
     // Raw body für Webhook Signature Verification
-    (req as any).rawBody = buf;
+    const requestWithRawBody = req as express.Request & { rawBody?: Buffer };
+    requestWithRawBody.rawBody = buf;
   }
 }));
 app.use(express.urlencoded({ 

@@ -132,6 +132,8 @@ jobs:
     needs: prebuild
     if: failure()
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
     
     steps:
       - name: Create Issue on Failure
