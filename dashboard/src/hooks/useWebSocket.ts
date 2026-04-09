@@ -8,6 +8,7 @@ interface UseWebSocketOptions {
   onError?: (error: Event) => void;
   reconnectInterval?: number;
   maxReconnectAttempts?: number;
+  enabled?: boolean;
 }
 
 export function useWebSocket(url: string, options: UseWebSocketOptions = {}) {
@@ -18,6 +19,7 @@ export function useWebSocket(url: string, options: UseWebSocketOptions = {}) {
     onError,
     reconnectInterval = 3000,
     maxReconnectAttempts = 5,
+    enabled = true,
   } = options;
 
   const [isConnected, setIsConnected] = useState(false);
@@ -27,6 +29,10 @@ export function useWebSocket(url: string, options: UseWebSocketOptions = {}) {
   const reconnectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const connect = useCallback(() => {
+    if (!enabled || !url) {
+      return;
+    }
+
     try {
       ws.current = new WebSocket(url);
 
@@ -67,7 +73,7 @@ export function useWebSocket(url: string, options: UseWebSocketOptions = {}) {
     } catch (error) {
       console.error('Failed to connect WebSocket:', error);
     }
-  }, [url, onMessage, onConnect, onDisconnect, onError, reconnectInterval, maxReconnectAttempts]);
+  }, [enabled, url, onMessage, onConnect, onDisconnect, onError, reconnectInterval, maxReconnectAttempts]);
 
   const disconnect = useCallback(() => {
     if (reconnectTimer.current) {
@@ -86,11 +92,16 @@ export function useWebSocket(url: string, options: UseWebSocketOptions = {}) {
   }, []);
 
   useEffect(() => {
+    if (!enabled || !url) {
+      setIsConnected(false);
+      return undefined;
+    }
+
     connect();
     return () => {
       disconnect();
     };
-  }, [connect, disconnect]);
+  }, [enabled, url, connect, disconnect]);
 
   return {
     isConnected,

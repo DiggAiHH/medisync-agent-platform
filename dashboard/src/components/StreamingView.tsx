@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useWebSocket } from '../hooks/useWebSocket';
+import { appConfig } from '../config';
+import { getDemoJob, getDemoStreamContent } from '../demoData';
 import type { WebSocketMessage } from '../types';
 
 interface StreamingViewProps {
@@ -7,6 +9,7 @@ interface StreamingViewProps {
 }
 
 export function StreamingView({ jobId }: StreamingViewProps) {
+  const isDemoMode = appConfig.isDemoMode;
   const [streamContent, setStreamContent] = useState<string>('');
   const [isStreaming, setIsStreaming] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -32,15 +35,23 @@ export function StreamingView({ jobId }: StreamingViewProps) {
     }
   };
 
-  const { isConnected } = useWebSocket('ws://localhost:8080', {
+  const { isConnected } = useWebSocket(appConfig.wsUrl, {
     onMessage: handleMessage,
+    enabled: !isDemoMode && Boolean(appConfig.wsUrl),
   });
 
   // Clear stream when job changes
   useEffect(() => {
+    if (isDemoMode) {
+      const demoJob = jobId ? getDemoJob(jobId) : undefined;
+      setStreamContent(jobId ? getDemoStreamContent(jobId) : '');
+      setIsStreaming(demoJob?.status === 'processing');
+      return;
+    }
+
     setStreamContent('');
     setIsStreaming(false);
-  }, [jobId]);
+  }, [isDemoMode, jobId]);
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -49,17 +60,20 @@ export function StreamingView({ jobId }: StreamingViewProps) {
     }
   }, [streamContent]);
 
+  const connectionActive = isDemoMode || isConnected;
+  const connectionLabel = isDemoMode ? 'Demo' : isConnected ? 'Verbunden' : 'Getrennt';
+
   if (!jobId) {
     return (
       <div className="streaming-view">
         <div className="streaming-header">
           <h3>🔴 Live Stream</h3>
-          <span className={`connection-status ${isConnected ? 'connected' : 'disconnected'}`}>
-            {isConnected ? 'Verbunden' : 'Getrennt'}
+          <span className={`connection-status ${connectionActive ? 'connected' : 'disconnected'}`}>
+            {connectionLabel}
           </span>
         </div>
         <div className="streaming-content empty">
-          <p>Wählen Sie einen Job aus, um den Live-Stream zu sehen</p>
+          <p>Wählen Sie einen Job aus, um die Stream-Vorschau zu sehen</p>
         </div>
       </div>
     );
@@ -71,8 +85,8 @@ export function StreamingView({ jobId }: StreamingViewProps) {
         <h3>🔴 Live Stream</h3>
         <div className="streaming-status">
           {isStreaming && <span className="streaming-indicator">Streaming...</span>}
-          <span className={`connection-status ${isConnected ? 'connected' : 'disconnected'}`}>
-            {isConnected ? 'Verbunden' : 'Getrennt'}
+          <span className={`connection-status ${connectionActive ? 'connected' : 'disconnected'}`}>
+            {connectionLabel}
           </span>
         </div>
       </div>

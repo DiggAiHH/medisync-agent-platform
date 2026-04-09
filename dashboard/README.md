@@ -40,6 +40,27 @@ Erstelle eine `.env` Datei basierend auf `.env.example`:
 ```env
 VITE_API_URL=http://localhost:3000
 VITE_WS_URL=ws://localhost:8080
+VITE_DEMO_MODE=false
+VITE_BASE_PATH=/
+```
+
+Fuer eine statische Produktvorschau ohne Backend kann das Dashboard im Demo-Modus gebaut werden:
+
+```env
+VITE_DEMO_MODE=true
+VITE_BASE_PATH=/medisync-agent-platform/
+```
+
+## Oeffentliche Bereitstellung
+
+Dieses Repository enthaelt einen GitHub-Pages-Workflow fuer das Dashboard. Der Workflow baut die App aus `dashboard/` und veroeffentlicht eine Demo-Vorschau mit Beispieldaten.
+
+Fuer eine Live-Umgebung setzen Sie stattdessen beim Build:
+
+```env
+VITE_API_URL=https://api.example.com
+VITE_WS_URL=wss://api.example.com
+VITE_DEMO_MODE=false
 ```
 
 ## Projektstruktur

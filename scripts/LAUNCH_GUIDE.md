@@ -231,7 +231,7 @@ https://discord.com/api/oauth2/authorize?client_id=...&permissions=...&scope=bot
 4. **Kopiere den Token sofort!** (wird nur einmal angezeigt)
 5. Füge ihn in `bot\discord\.env` ein:
    ```
-   DISCORD_TOKEN=MTAxMjM0NTY3ODkw.xxxxxx.xxxxxxxxx
+   DISCORD_TOKEN=paste-your-discord-bot-token-here
    ```
 
 ### 3. Berechtigungen aktivieren
@@ -380,7 +380,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 2. Token aus Discord Developer Portal kopieren
 3. Token format:
    ```
-   DISCORD_TOKEN=MTAxMjM0NTY3ODkw.xxxxxx.xxxxxxxxx
+   DISCORD_TOKEN=paste-your-discord-bot-token-here
    ```
 
 ### Port bereits belegt

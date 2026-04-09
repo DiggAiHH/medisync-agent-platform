@@ -354,7 +354,7 @@ Aktivieren Sie folgende Privileged Gateway Intents:
 3. Fügen Sie ihn in `bot/discord/.env` ein:
 
 ```env
-DISCORD_TOKEN=MTI5NjY4NzY1NDMyMTA5ODc3NA.Gabcd.abcdefghijklmnopqrstuvwxyz
+DISCORD_TOKEN=paste-your-discord-bot-token-here
 ```
 
 ⚠️ **Wichtig**: Teilen Sie den Token niemals öffentlich!

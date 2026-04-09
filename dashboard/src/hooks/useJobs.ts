@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { getJobs, getJob, createJob, getJobStats } from '../api/jobs';
-// Job type imported for future use
+import { appConfig } from '../config';
+import { demoJobs, demoStats, getDemoJob } from '../demoData';
 
 const JOBS_KEY = 'jobs';
 const JOB_STATS_KEY = 'jobStats';
@@ -10,12 +11,16 @@ export function useJobs() {
   return useQuery({
     queryKey: [JOBS_KEY],
     queryFn: async () => {
+      if (appConfig.isDemoMode) {
+        return demoJobs;
+      }
+
       const response = await getJobs();
       return response.data;
     },
-    refetchInterval: 5000, // Auto-Refresh alle 5 Sekunden
-    refetchIntervalInBackground: true,
-    staleTime: 0,
+    refetchInterval: appConfig.isDemoMode ? false : 5000,
+    refetchIntervalInBackground: !appConfig.isDemoMode,
+    staleTime: appConfig.isDemoMode ? Infinity : 0,
   });
 }
 
@@ -24,11 +29,16 @@ export function useJob(id: string) {
   return useQuery({
     queryKey: [JOBS_KEY, id],
     queryFn: async () => {
+      if (appConfig.isDemoMode) {
+        return getDemoJob(id);
+      }
+
       const response = await getJob(id);
       return response.data;
     },
     enabled: !!id,
-    refetchInterval: 5000,
+    refetchInterval: appConfig.isDemoMode ? false : 5000,
+    staleTime: appConfig.isDemoMode ? Infinity : 0,
   });
 }
 
@@ -37,10 +47,15 @@ export function useJobStats() {
   return useQuery({
     queryKey: [JOB_STATS_KEY],
     queryFn: async () => {
+      if (appConfig.isDemoMode) {
+        return demoStats;
+      }
+
       const response = await getJobStats();
       return response.data;
     },
-    refetchInterval: 5000,
+    refetchInterval: appConfig.isDemoMode ? false : 5000,
+    staleTime: appConfig.isDemoMode ? Infinity : 0,
   });
 }
 
@@ -50,6 +65,10 @@ export function useCreateJob() {
 
   return useMutation({
     mutationFn: async ({ userId, prompt }: { userId: string; prompt: string }) => {
+      if (appConfig.isDemoMode) {
+        throw new Error('Im Demo-Modus koennen keine neuen Jobs erstellt werden.');
+      }
+
       const response = await createJob(userId, prompt);
       return response.data;
     },

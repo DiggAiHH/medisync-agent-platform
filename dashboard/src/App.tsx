@@ -4,10 +4,12 @@ import { JobList } from './components/JobList';
 import { JobDetail } from './components/JobDetail';
 import { StreamingView } from './components/StreamingView';
 import { CreateJobModal } from './components/CreateJobModal';
+import { appConfig } from './config';
 import type { Job } from './types';
 import './App.css';
 
 function App() {
+  const isDemoMode = appConfig.isDemoMode;
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'detail'>('overview');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -55,21 +57,35 @@ function App() {
         <div className="sidebar-footer">
           <button
             className="btn-create-job"
-            onClick={() => setIsCreateModalOpen(true)}
+            onClick={() => !isDemoMode && setIsCreateModalOpen(true)}
+            disabled={isDemoMode}
+            title={isDemoMode ? 'In der oeffentlichen Vorschau deaktiviert' : undefined}
           >
             <span>+</span>
             Neuer Job
           </button>
+          {isDemoMode && <p className="sidebar-note">Demo-Modus aktiv</p>}
         </div>
       </aside>
 
       {/* Main Content */}
       <main className="main-content">
+        {isDemoMode && (
+          <section className="demo-banner">
+            <p className="demo-eyebrow">Oeffentliche Vorschau</p>
+            <h2>Dashboard-Demo fuer Kunden</h2>
+            <p>
+              Diese Bereitstellung zeigt Beispieldaten. Fuer Live-Daten koennen spaeter
+              VITE_API_URL und VITE_WS_URL hinterlegt werden.
+            </p>
+          </section>
+        )}
+
         {activeTab === 'overview' ? (
           <>
             <header className="content-header">
               <h1>Dashboard</h1>
-              <p>Übersicht aller Agent-Jobs</p>
+              <p>{isDemoMode ? 'Interaktive Produktvorschau mit Demo-Daten' : 'Übersicht aller Agent-Jobs'}</p>
             </header>
 
             <section className="stats-section">
@@ -100,10 +116,12 @@ function App() {
       </main>
 
       {/* Create Job Modal */}
-      <CreateJobModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-      />
+      {!isDemoMode && (
+        <CreateJobModal
+          isOpen={isCreateModalOpen}
+          onClose={() => setIsCreateModalOpen(false)}
+        />
+      )}
     </div>
   );
 }
