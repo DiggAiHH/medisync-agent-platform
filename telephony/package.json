@@ -6,10 +6,13 @@
   "scripts": {
     "dev": "ts-node src/gateway/server.ts",
     "build": "tsc",
+    "typecheck": "tsc --noEmit",
     "start": "node dist/gateway/server.js",
     "watch": "tsc --watch",
     "lint": "eslint src/**/*.ts",
-    "test": "mocha --require ts-node/register 'tests/**/*.test.ts' --timeout 10000"
+    "test": "mocha --require ts-node/register 'tests/**/*.test.ts' --timeout 10000",
+    "quality:check": "npm run --silent typecheck && npm run --silent lint && npm run --silent test",
+    "stability:7x": "node scripts/stability-seven-runs.js"
   },
   "keywords": [
     "starface",

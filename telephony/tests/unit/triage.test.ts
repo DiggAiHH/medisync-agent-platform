@@ -9,11 +9,12 @@ import { EmpathyAnalyzer } from '../../src/triage/empathyAnalyzer';
 import { UrgencyLevel, CallIntent } from '../../src/shared/types';
 
 const OLLAMA_CONFIG = {
-  endpoint: 'http://localhost:11434',
+  // Intentionally unreachable endpoint to force deterministic fallback behavior.
+  endpoint: 'http://127.0.0.1:1',
   model: 'llama3.2',
   temperature: 0.2,
   maxTokens: 2000,
-  requestTimeoutMs: 60000,
+  requestTimeoutMs: 300,
 };
 
 describe('UrgencyClassifier', () => {
