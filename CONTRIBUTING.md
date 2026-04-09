@@ -34,8 +34,8 @@ Wenn du lokal entwickeln möchtest:
 
 ```bash
 # Repository klonen
-git clone https://github.com/dein-username/agents-platform.git
-cd agents-platform
+git clone https://github.com/DiggAiHH/medisync-agent-platform.git
+cd medisync-agent-platform
 
 # DevContainer starten (VS Code)
 code .
@@ -314,9 +314,9 @@ agents-platform/
 
 ## Hilfe & Support
 
-- **Fragen?** Öffne ein [Discussion](https://github.com/dein-username/agents-platform/discussions)
-- **Bug gefunden?** Erstelle ein [Issue](https://github.com/dein-username/agents-platform/issues)
-- **Feature Request?** Erstelle ein [Feature Issue](https://github.com/dein-username/agents-platform/issues/new?template=feature_request.md)
+- **Fragen?** Öffne ein [Discussion](https://github.com/DiggAiHH/medisync-agent-platform/discussions)
+- **Bug gefunden?** Erstelle ein [Issue](https://github.com/DiggAiHH/medisync-agent-platform/issues)
+- **Feature Request?** Erstelle ein [Feature Issue](https://github.com/DiggAiHH/medisync-agent-platform/issues/new?template=feature_request.md)
 
 ## Danksagung
 

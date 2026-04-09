@@ -4,12 +4,12 @@ Dieser Ordner enthält die Konfiguration für GitHub Codespaces.
 
 ## One-Click Deployment
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/dein-username/agents-platform)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/DiggAiHH/medisync-agent-platform)
 
 ## Prebuilds
 
 Prebuilds sind konfiguriert für:
-- **Branches**: `main`, `develop`, `feature/*`, `release/*`
+- **Branches**: `master`, `develop`, `feature/*`, `release/*`
 - **Schedule**: Täglich um 03:00 UTC
 - **Regions**: `us-west2`, `us-east1`, `europe-west1`, `asia-northeast1`
 

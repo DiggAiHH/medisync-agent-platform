@@ -116,15 +116,17 @@ make logs
 
 ---
 
-## 📸 Screenshots
+## 🌐 Öffentliche Demo
 
-<!-- TODO: Screenshots einfügen -->
+Die öffentliche Vorschau ist unter https://diggaihh.github.io/medisync-agent-platform/ verfügbar.
 
-| Dashboard | Job-Übersicht | Echtzeit-Logs |
-|-----------|---------------|---------------|
-| ![Dashboard](docs/screenshots/dashboard.png) | ![Jobs](docs/screenshots/jobs.png) | ![Logs](docs/screenshots/logs.png) |
+Die Demo zeigt:
 
-*Screenshots werden vor dem Launch hinzugefügt*
+- das Dashboard-Layout in einer produktnahen Ansicht
+- Beispiel-Jobs mit Status, Zeitstempeln und Detailansicht
+- eine Stream-Vorschau für laufende Agenten-Jobs
+
+Für eine Live-Umgebung können dieselben UI-Komponenten mit einer echten API- und WebSocket-Instanz verbunden werden.
 
 ---
 

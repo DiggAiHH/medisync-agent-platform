@@ -347,10 +347,10 @@ docker-compose logs discord-bot
 
 | Kanal | Link/Zugang |
 |-------|-------------|
-| **Dokumentation** | `./docs/` Verzeichnis |
-| **Issues** | GitHub Issues |
-| **Discord** | [Discord Server Link] |
-| **Email** | support@medisync.example |
+| **Dokumentation** | https://github.com/DiggAiHH/medisync-agent-platform/tree/master/docs |
+| **Issues** | https://github.com/DiggAiHH/medisync-agent-platform/issues |
+| **Diskussionen** | https://github.com/DiggAiHH/medisync-agent-platform/discussions |
+| **Öffentliche Demo** | https://diggaihh.github.io/medisync-agent-platform/ |
 
 ---
 

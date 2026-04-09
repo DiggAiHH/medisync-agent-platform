@@ -1,11 +1,11 @@
 blank_issues_enabled: false
 contact_links:
   - name: 🤔 Fragen & Diskussionen
-    url: https://github.com/dein-username/agents-platform/discussions
+    url: https://github.com/DiggAiHH/medisync-agent-platform/discussions
     about: Für Fragen, Ideen und allgemeine Diskussionen
   - name: 📖 Dokumentation
-    url: https://github.com/dein-username/agents-platform/tree/main/docs
+    url: https://github.com/DiggAiHH/medisync-agent-platform/tree/master/docs
     about: Dokumentation und Guides
-  - name: 💬 Discord Community
-    url: https://discord.gg/medisync
-    about: Tritt unserer Discord Community bei
+  - name: 🌐 Öffentliche Demo
+    url: https://diggaihh.github.io/medisync-agent-platform/
+    about: Interaktive Dashboard-Vorschau im Browser

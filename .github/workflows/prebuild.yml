@@ -4,10 +4,10 @@
 name: Codespaces Prebuild
 
 on:
-  # Push auf main und develop branches
+  # Push auf master und develop branches
   push:
     branches:
-      - main
+      - master
       - develop
     paths-ignore:
       - '**.md'
@@ -24,7 +24,7 @@ on:
       branch:
         description: 'Branch für Prebuild'
         required: true
-        default: 'main'
+        default: 'master'
         type: string
 
 # Konkurrenz-Handling: Breche laufende Workflows ab, wenn ein neuer Push erfolgt
@@ -53,9 +53,11 @@ jobs:
           node-version: '20'
           cache: 'npm'
           cache-dependency-path: |
-            backend/package-lock.json
-            dashboard/package-lock.json
-            bot/discord/package-lock.json
+            package.json
+            backend/package.json
+            dashboard/package.json
+            bot/discord/package.json
+            code-server/extensions/medical-ai-extension/package.json
             
       - name: Cache Dependencies
         uses: actions/cache@v4
@@ -70,19 +72,19 @@ jobs:
       - name: Install Backend Dependencies
         working-directory: ./backend
         run: |
-          npm ci --silent
+          npm install --silent
           npm run build
           
       - name: Install Dashboard Dependencies
         working-directory: ./dashboard
         run: |
-          npm ci --silent
+          npm install --silent
           npm run build
           
       - name: Install Discord Bot Dependencies
         working-directory: ./bot/discord
         run: |
-          npm ci --silent
+          npm install --silent
           npm run build
           
       - name: Verify Build Artifacts
@@ -103,7 +105,7 @@ jobs:
       - name: Build VS Code Extension
         working-directory: ./code-server/extensions/medical-ai-extension
         run: |
-          npm ci --silent
+          npm install --silent
           npm run compile
           
       - name: Create Prebuild Summary

@@ -5,7 +5,7 @@
 
 # Für welche Branches sollen Prebuilds erstellt werden?
 branches:
-  - main
+  - master
   - develop
   - 'feature/*'
   - 'release/*'
@@ -23,12 +23,12 @@ schedule:
   # Täglich um 3:00 UTC (5:00 MESZ / 4:00 MEZ)
   - cron: '0 3 * * *'
     branches:
-      - main
+      - master
       - develop
   # Wöchentlich am Sonntag um 0:00 UTC (vollständiger Rebuild)
   - cron: '0 0 * * 0'
     branches:
-      - main
+      - master
 
 # Retention Policy
 # Wie lange werden Prebuilds aufbewahrt?
