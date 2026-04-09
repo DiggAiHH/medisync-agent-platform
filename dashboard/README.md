@@ -55,6 +55,9 @@ VITE_BASE_PATH=/medisync-agent-platform/
 
 Dieses Repository enthaelt einen GitHub-Pages-Workflow fuer das Dashboard. Der Workflow baut die App aus `dashboard/` und veroeffentlicht eine Demo-Vorschau mit Beispieldaten.
 
+Aktuelle Live-Demo: https://diggaihh.github.io/medisync-agent-platform/
+Repository: https://github.com/DiggAiHH/medisync-agent-platform
+
 Fuer eine Live-Umgebung setzen Sie stattdessen beim Build:
 
 ```env

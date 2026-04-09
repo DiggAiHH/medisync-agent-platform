@@ -118,12 +118,12 @@ npm run dev:all
 
 ```bash
 # Mit HTTPS
-git clone https://github.com/ihr-username/medisync-agents.git
+git clone https://github.com/DiggAiHH/medisync-agent-platform.git
 
 # Mit SSH
-git clone git@github.com:ihr-username/medisync-agents.git
+git clone git@github.com:DiggAiHH/medisync-agent-platform.git
 
-cd medisync-agents
+cd medisync-agent-platform
 ```
 
 ### Schritt 2: Dependencies installieren

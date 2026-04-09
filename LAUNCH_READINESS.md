@@ -82,8 +82,8 @@ npm run build:extension  # VS Code Extension
 
 ```bash
 # 1. Repository klonen
-git clone https://github.com/yourusername/medisync.git
-cd medisync
+git clone https://github.com/DiggAiHH/medisync-agent-platform.git
+cd medisync-agent-platform
 
 # 2. Environment konfigurieren
 cp .env.example .env
@@ -109,7 +109,7 @@ make dev-all
 ### Option 3: One-Line Install (Linux/macOS)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/yourusername/medisync/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/DiggAiHH/medisync-agent-platform/master/scripts/install.sh | bash
 ```
 
 ---

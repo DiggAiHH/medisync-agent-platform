@@ -234,8 +234,8 @@ git config --global core.autocrlf true
 cd C:\Projekte
 
 # Repository klonen
-git clone https://github.com/yourusername/medisync.git
-cd medisync
+git clone https://github.com/DiggAiHH/medisync-agent-platform.git
+cd medisync-agent-platform
 ```
 
 ### Environment konfigurieren

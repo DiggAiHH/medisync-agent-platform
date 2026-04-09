@@ -475,7 +475,7 @@ cat backend/.env | grep -v TOKEN >> debug-info.txt
 |-------|---------|
 | 📧 Email | support@medisync.example |
 | 💬 Discord | [Discord Server](https://discord.gg/medisync) |
-| 🐛 Issues | [GitHub Issues](https://github.com/ihr-username/medisync-agents/issues) |
+| 🐛 Issues | [GitHub Issues](https://github.com/DiggAiHH/medisync-agent-platform/issues) |
 
 ---
 

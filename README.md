@@ -2,6 +2,11 @@
 
 Eine vollständige Multi-Agent Platform für medizinische KI-Anwendungen mit Discord Bot, Dashboard und API.
 
+Live-Demo: https://diggaihh.github.io/medisync-agent-platform/
+Repository: https://github.com/DiggAiHH/medisync-agent-platform
+
+Hinweis: Die öffentliche GitHub-Pages-Bereitstellung zeigt das Dashboard im Demo-Modus mit Beispieldaten.
+
 [![Node.js](https://img.shields.io/badge/Node.js-20+-green.svg)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
 [![Redis](https://img.shields.io/badge/Redis-7+-red.svg)](https://redis.io/)
@@ -27,15 +32,15 @@ Eine vollständige Multi-Agent Platform für medizinische KI-Anwendungen mit Dis
 ### One-Line Installation
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/yourusername/medisync/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/DiggAiHH/medisync-agent-platform/master/scripts/install.sh | bash
 ```
 
 Oder manuell:
 
 ```bash
 # Repository klonen
-git clone https://github.com/yourusername/medisync.git
-cd medisync
+git clone https://github.com/DiggAiHH/medisync-agent-platform.git
+cd medisync-agent-platform
 
 # Installation
 make install
@@ -67,8 +72,8 @@ Neu hier? Starte mit unserem **[5-Minuten Quickstart](QUICKSTART.md)** für sofo
 
 ```powershell
 # 1. Repository klonen
-git clone https://github.com/yourusername/medisync.git
-cd medisync
+git clone https://github.com/DiggAiHH/medisync-agent-platform.git
+cd medisync-agent-platform
 
 # 2. Environment kopieren
 Copy-Item .env.example .env
@@ -397,17 +402,19 @@ MIT License - siehe [LICENSE](LICENSE)
 | 🚀 Quickstart | [QUICKSTART.md](QUICKSTART.md) |
 | 🪟 Windows Hilfe | [WINDOWS_SETUP.md](WINDOWS_SETUP.md) |
 | 📋 Launch Status | [LAUNCH_READINESS.md](LAUNCH_READINESS.md) |
+| 🌐 Live Demo | https://diggaihh.github.io/medisync-agent-platform/ |
+| 🐙 Öffentliches Repository | https://github.com/DiggAiHH/medisync-agent-platform |
 
 ---
 
 **One-Line Start:**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/yourusername/medisync/main/scripts/install.sh | bash && make start
+curl -fsSL https://raw.githubusercontent.com/DiggAiHH/medisync-agent-platform/master/scripts/install.sh | bash && make start
 ```
 
 **Windows PowerShell:**
 ```powershell
-git clone https://github.com/yourusername/medisync.git; cd medisync; Copy-Item .env.example .env; npm run install:all; docker-compose up -d
+git clone https://github.com/DiggAiHH/medisync-agent-platform.git; cd medisync-agent-platform; Copy-Item .env.example .env; npm run install:all; docker-compose up -d
 ```
 
 **Project bereit für Launch! 🚀**

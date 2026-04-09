@@ -193,8 +193,8 @@ apt install docker-compose-plugin
 apt install git -y
 
 # Repository klonen
-git clone https://github.com/ihr-username/medisync-agents.git
-cd medisync-agents
+git clone https://github.com/DiggAiHH/medisync-agent-platform.git
+cd medisync-agent-platform
 
 # Environment kopieren
 cp backend/.env.example backend/.env
