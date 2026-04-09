@@ -143,6 +143,82 @@ services:
           cpus: '0.25'
           memory: 128M
 
+  # Telephony Gateway - AI Phone Assistant
+  telephony:
+    build:
+      context: ./telephony
+      dockerfile: Dockerfile
+    container_name: medisync-telephony
+    restart: unless-stopped
+    ports:
+      - "3100:3100"
+    environment:
+      - NODE_ENV=production
+      - STARFACE_BASE_URL=${STARFACE_BASE_URL:-https://192.168.1.100:443}
+      - STARFACE_LOGIN_ID=${STARFACE_LOGIN_ID}
+      - STARFACE_PASSWORD=${STARFACE_PASSWORD}
+      - STARFACE_POLL_INTERVAL_MS=2000
+      - STARFACE_TLS_REJECT_UNAUTHORIZED=false
+      - WHISPER_ENDPOINT=http://whisper:8178
+      - WHISPER_MODEL=large-v3
+      - WHISPER_LANGUAGE=de
+      - OLLAMA_ENDPOINT=http://host.docker.internal:11434
+      - OLLAMA_MODEL=llama3.2
+      - PIPER_ENDPOINT=http://piper:5030
+      - PIPER_VOICE=de_DE-thorsten-high
+      - TELEPHONY_PORT=3100
+      - TELEPHONY_WS_PORT=3100
+      - TELEPHONY_AUDIO_TEMP_DIR=/tmp/medisync-telephony
+    depends_on:
+      - whisper
+      - piper
+    volumes:
+      - telephony_audio:/tmp/medisync-telephony
+      - telephony_logs:/app/logs
+    networks:
+      - medisync-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+
+  # Whisper.cpp STT Server (local, DSGVO-konform)
+  whisper:
+    image: ghcr.io/ggerganov/whisper.cpp:main
+    container_name: medisync-whisper
+    restart: unless-stopped
+    ports:
+      - "8178:8178"
+    command: ["--model", "/models/ggml-large-v3.bin", "--host", "0.0.0.0", "--port", "8178"]
+    volumes:
+      - whisper_models:/models
+    networks:
+      - medisync-network
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 4G
+
+  # Piper TTS Server (local, DSGVO-konform)
+  piper:
+    image: rhasspy/wyoming-piper:latest
+    container_name: medisync-piper
+    restart: unless-stopped
+    ports:
+      - "5030:5030"
+    command: ["--voice", "de_DE-thorsten-high"]
+    volumes:
+      - piper_data:/data
+    networks:
+      - medisync-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+
   # Dead Letter Queue Handler (Optional)
   dlq-handler:
     build:
@@ -221,6 +297,14 @@ volumes:
   bot_logs:
     driver: local
   dlq_logs:
+    driver: local
+  telephony_audio:
+    driver: local
+  telephony_logs:
+    driver: local
+  whisper_models:
+    driver: local
+  piper_data:
     driver: local
   prometheus_data:
     driver: local

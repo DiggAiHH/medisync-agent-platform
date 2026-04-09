@@ -6,17 +6,20 @@
   "workspaces": [
     "backend",
     "bot/discord",
-    "dashboard"
+    "dashboard",
+    "telephony"
   ],
   "scripts": {
-    "install:all": "npm install && npm run install:backend && npm run install:bot && npm run install:dashboard",
+    "install:all": "npm install && npm run install:backend && npm run install:bot && npm run install:dashboard && npm run install:telephony",
     "install:backend": "cd backend && npm install",
     "install:bot": "cd bot/discord && npm install",
     "install:dashboard": "cd dashboard && npm install",
-    "build": "npm run build:backend && npm run build:bot && npm run build:dashboard",
+    "install:telephony": "cd telephony && npm install",
+    "build": "npm run build:backend && npm run build:bot && npm run build:dashboard && npm run build:telephony",
     "build:backend": "cd backend && npm run build",
     "build:bot": "cd bot/discord && npm run build",
     "build:dashboard": "cd dashboard && npm run build",
+    "build:telephony": "cd telephony && npm run build",
     "test": "powershell -ExecutionPolicy Bypass -File scripts/test-all.ps1",
     "test:verbose": "powershell -ExecutionPolicy Bypass -File scripts/test-all.ps1 -Verbose",
     "start": "npm run start:backend",
