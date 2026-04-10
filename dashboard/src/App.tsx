@@ -65,6 +65,12 @@ function App() {
             Neuer Job
           </button>
           {isDemoMode && <p className="sidebar-note">Demo-Modus aktiv</p>}
+          <div className="sidebar-contact">
+            <p className="sidebar-contact-label">Kontakt</p>
+            <a className="sidebar-contact-link" href="mailto:Diggai@tutanota.de">
+              Diggai@tutanota.de
+            </a>
+          </div>
         </div>
       </aside>
 
